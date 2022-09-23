@@ -8,6 +8,15 @@ namespace eda7k.Controllers
         // GET: AdminController
         public ActionResult Index()
         {
+            if (false)
+                return RedirectToAction("Auth");
+            return View();
+        }
+        // GET: AdminController/auth
+        public ActionResult Auth()
+        {
+            if (false)
+                return RedirectToAction("Index");
             return View();
         }
 
@@ -17,67 +26,28 @@ namespace eda7k.Controllers
             return View();
         }
 
-        // GET: AdminController/Create
-        public ActionResult Create()
+        // GET: AdminController/Massiv
+        public ActionResult Massiv()
         {
             return View();
         }
 
-        // POST: AdminController/Create
+        // POST: AdminController/Massiv
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public Product[] Massiv(IFormCollection collection)
         {
-            try
+            Product[] products = new Product[]
             {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+                new Product{Id = 1, Name = "123"},
+                new Product{Id = 2, Name = "123"},
+                new Product{Id = 3, Name = "123"},
+            };
+            return products;
         }
-
-        // GET: AdminController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: AdminController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: AdminController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: AdminController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+    }
+    public class Product
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 }
