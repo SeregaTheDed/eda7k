@@ -1,5 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.Protocol;
+using System.Security.Policy;
+using System.Text;
+using System.Text.Json;
 
 namespace eda7k.Controllers
 {
@@ -34,17 +38,36 @@ namespace eda7k.Controllers
 
         // POST: AdminController/Massiv
         [HttpPost]
-        public Product[] Massiv(IFormCollection collection)
+        public Product[] Massiv(int a)
         {
+            
             Product[] products = new Product[]
             {
-                new Product{Id = 1, Name = "123"},
-                new Product{Id = 2, Name = "123"},
-                new Product{Id = 3, Name = "123"},
+                new Product{Id = 1, Name = "Бризоль"},
+                new Product{Id = 2, Name = "Соус"},
+                new Product{Id = 3, Name = "Котлета"},
+                new Product{Id = 4, Name = "Макароны"},
+                new Product{Id = 5, Name = "Греча"},
             };
             return products;
         }
+        [HttpPost]
+        public Product[] Massiv2(string abc)
+        {
+            Product[] mass = JsonSerializer.Deserialize<Product[]>(abc);
+            if (mass.Count() != 0)
+                return new Product[]
+            {
+                new Product { Id = 1, Name = "Бризоль" },
+                new Product { Id = 2, Name = "Соус" },
+                new Product { Id = 3, Name = "Котлета" },
+                new Product { Id = 4, Name = "Макароны" },
+                new Product { Id = 5, Name = "Греча" },
+            };
+            return new Product[0];
+        }
     }
+    [Serializable]
     public class Product
     {
         public int Id { get; set; }

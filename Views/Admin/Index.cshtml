@@ -3,37 +3,77 @@
 }
 
 <h1>Index</h1>
-<button class="button">Отправить запрос</button>
+<button id="button">Отправить запрос</button>
+<button id="button_auth">Авторизация</button>
 <div id="textbox">132</div>
 @section scripts
     {
     <script src="~/lib/jquery/dist/jquery.js"></script>
     <script>
         $(document).ready(function () {
-            $('button').click(function (e) {
-                // Stop form from sending request to server
+            $('#button').click(function (e) {
                 e.preventDefault();
                 var btn = $(this);
                 $.ajax({
                     method: "POST",
                     url: "/admin/massiv",
                     dataType: "json",
-                    data: {
-                        "name": btn.val(),
-                        'input': $('input').val()
-                    },
                     success: function (data) {
                         $("#textbox").textContent += data;
-                        data.forEach(
-                            element => {
-                                $("#textbox").text($("#textbox").text() + " " + element.id);
-                            }
-                        );
+                        //data.forEach(
+                            //element => {
+                                //$("#textbox").text($("#textbox").text() + " " + element.id);
+                            //}
+                        //);
+                        //debugger;
                         
-
+                        let abc = JSON.stringify(data);
+                        $.ajax({
+                            method: "POST",
+                            url: "/admin/massiv2",
+                            accept: 'application/json',
+                            data: {
+                                //data
+                                abc
+                            },
+                            success: function (data) {
+                                //debugger
+                                data.forEach(
+                                    element => {
+                                        $("#textbox").text($("#textbox").text() + " " + element.id);
+                                    }
+                                );
+                            },
+                            error: function (er) {
+                                console.log(er);
+                            }
+                        });
+                        
                     },
                     error: function (er) {
                         console.log(er);
+                    }
+                });
+            })
+        });
+        $(document).ready(function () {
+            $('#button_auth').click(function (e) {
+                e.preventDefault();
+                var btn = $(this);
+                $.ajax({
+                    method: "POST",
+                    url: "/Authentication/Authentication",
+                    data: {
+                        "login": "admin",
+                        'password': "admin",
+                    },
+                    success: function (data) {
+                        $("#textbox").text($("#textbox").text() + " " +data);
+                        
+                    },
+                    error: function (er) {
+                        console.log(er);
+                        console.log(123);
                     }
                 });
             })
