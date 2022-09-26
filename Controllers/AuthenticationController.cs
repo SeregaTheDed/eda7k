@@ -5,10 +5,10 @@ namespace eda7k.Controllers
     public class AuthenticationController : Controller
     {
         [HttpPost]
-        public IActionResult Authentication(string login, string password)
+        public IActionResult Authentication(string login)
         {
-            if (login == "admin" && password == "admin")
-                return new OkObjectResult("COMPLETED");
+            if (login == "admin")
+                return new RedirectResult("home");
             return new NotFoundResult();
             
         }

@@ -7,6 +7,7 @@ namespace eda7k.Models
         public int id { get; set; }
         public bool is_admin { get; set; }
         public string last_name { get; set; }
+        public string login { get; set; }
         
     }
     public partial class ApplicationContext : DbContext
