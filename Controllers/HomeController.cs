@@ -17,20 +17,6 @@ namespace eda7k.Controllers
         
         public IActionResult Index()
         {
-            using (var db = new ApplicationContext())
-            {
-                var temp = DateTime.Now;
-                //Console.WriteLine(getUsers(db).Length);
-                Console.WriteLine(db.getUsers().Length);
-                Console.WriteLine(DateTime.Now - temp);
-            }
-            using (var db = new ApplicationContext())
-            {
-                var temp = DateTime.Now;
-                //Console.WriteLine(getUsers(db).Length);
-                Console.WriteLine(db.getUsers().Length);
-                Console.WriteLine(DateTime.Now-temp);
-            }
             return View();
         }
 
