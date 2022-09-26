@@ -1,8 +1,12 @@
-﻿@{
+﻿@using eda7k.Models.Common
+@{
     ViewData["Title"] = "Index";
 }
 
 <h1>Index</h1>
+<h1>@Crypt.GetHashPassword("123")</h1>
+
+<h1>a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3</h1>
 <button id="button">Отправить запрос</button>
 <button id="button_auth">Авторизация</button>
 <div id="textbox">132</div>

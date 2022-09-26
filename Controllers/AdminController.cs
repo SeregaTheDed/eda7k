@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using eda7k.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Protocol;
 using System.Security.Policy;
@@ -38,10 +39,13 @@ namespace eda7k.Controllers
 
         // POST: AdminController/Massiv
         [HttpPost]
-        public Product[] Massiv(int a)
+        public User[] Massiv(int a)
         {
-            
-            Product[] products = new Product[]
+            using (var db = new ApplicationContext())
+            {
+                return db.users.ToArray();
+            }
+           /* Product[] products = new Product[]
             {
                 new Product{Id = 1, Name = "Бризоль"},
                 new Product{Id = 2, Name = "Соус"},
@@ -49,7 +53,7 @@ namespace eda7k.Controllers
                 new Product{Id = 4, Name = "Макароны"},
                 new Product{Id = 5, Name = "Греча"},
             };
-            return products;
+            return products;*/
         }
         [HttpPost]
         public Product[] Massiv2(string abc)

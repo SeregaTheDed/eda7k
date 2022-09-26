@@ -1,5 +1,6 @@
 ﻿using eda7k.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using System.Diagnostics;
 
 namespace eda7k.Controllers
