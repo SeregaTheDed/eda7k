@@ -1,6 +1,7 @@
 ﻿using eda7k.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace eda7k.Controllers
@@ -13,9 +14,23 @@ namespace eda7k.Controllers
         {
             _logger = logger;
         }
-
+        
         public IActionResult Index()
         {
+            using (var db = new ApplicationContext())
+            {
+                var temp = DateTime.Now;
+                //Console.WriteLine(getUsers(db).Length);
+                Console.WriteLine(db.getUsers().Length);
+                Console.WriteLine(DateTime.Now - temp);
+            }
+            using (var db = new ApplicationContext())
+            {
+                var temp = DateTime.Now;
+                //Console.WriteLine(getUsers(db).Length);
+                Console.WriteLine(db.getUsers().Length);
+                Console.WriteLine(DateTime.Now-temp);
+            }
             return View();
         }
 

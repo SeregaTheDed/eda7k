@@ -4,6 +4,22 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <div id="textbox">Result: </div>
+    <script>
+        
+        var group = { 'listofusers': listofusers };
+        console.log(group);
+        $.ajax({
+            dataType: 'json',
+            type: "POST",
+            url: "/Home/GetMassiv",
+            data: group,
+            success: function (data) {
+                console.log("output : " + JSON.stringify(data));
+            },
+            error: function (data) {
+                console.log("error : " + JSON.stringify(data));
+            },
+        });
+    </script>
 </div>

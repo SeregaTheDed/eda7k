@@ -22,26 +22,19 @@
                     method: "POST",
                     url: "/admin/massiv",
                     dataType: "json",
-                    success: function (data) {
-                        $("#textbox").textContent += data;
-                        //data.forEach(
-                            //element => {
-                                //$("#textbox").text($("#textbox").text() + " " + element.id);
-                            //}
-                        //);
-                        //debugger;
-                        
-                        let abc = JSON.stringify(data);
+                    success: function (products) {
+                        $("#textbox").textContent += products;
+                        var group = JSON.stringify(products);
+                        console.log(group);
                         $.ajax({
-                            method: "POST",
+                            dataType: 'json',
+                            contentType: "application/json",
+                            type: "POST",
                             url: "/admin/massiv2",
-                            accept: 'application/json',
-                            data: {
-                                //data
-                                abc
-                            },
+                            data: group,
                             success: function (data) {
                                 //debugger
+                                console.log("output : " + JSON.stringify(data));
                                 data.forEach(
                                     element => {
                                         $("#textbox").text($("#textbox").text() + " " + element.id);
@@ -60,6 +53,9 @@
                 });
             })
         });
+
+
+
         $(document).ready(function () {
             $('#button_auth').click(function (e) {
                 e.preventDefault();
