@@ -1,4 +1,5 @@
 ﻿using eda7k.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Protocol;
@@ -8,6 +9,7 @@ using System.Text.Json;
 
 namespace eda7k.Controllers
 {
+    [Authorize]
     public class AdminController : Controller
     {
         // GET: AdminController

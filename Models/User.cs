@@ -12,14 +12,26 @@ namespace eda7k.Models
     }
     public partial class ApplicationContext : DbContext
     {
+       /* public ApplicationContext(DbContextOptions<ApplicationContext> dbContextOptions)
+        : base(dbContextOptions)
+        {
+        }*/
         public DbSet<User> Users { get; set; }
         private static Func<ApplicationContext, User[]> _getUsers =
             EF.CompileQuery((ApplicationContext db) =>
                     db.Users.ToArray()
             );
+        private static Func<ApplicationContext,string, User> _getUserByLogin =
+            EF.CompileQuery((ApplicationContext db, string login) =>
+                    db.Users.Where(x => x.login == login).FirstOrDefault()
+            );
         public User[] getUsers()
         {
             return _getUsers(this);
+        }
+        public User getUserByLogin(string login)
+        {
+            return _getUserByLogin(this, login);
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

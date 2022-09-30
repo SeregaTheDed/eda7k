@@ -1,4 +1,5 @@
 ﻿using eda7k.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,7 @@ using System.Diagnostics;
 
 namespace eda7k.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -14,7 +16,6 @@ namespace eda7k.Controllers
         {
             _logger = logger;
         }
-        
         public IActionResult Index()
         {
             return View();
