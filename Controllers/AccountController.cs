@@ -15,50 +15,57 @@ namespace eda7k.Controllers
             return View();
         }
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(string login)
         {
-            if (ModelState.IsValid)
+            using (var db = new ApplicationContext())
             {
-                using (var db = new ApplicationContext())
+                User user = db.getUserByLogin(login);
+                if (user != null)
                 {
-                    User user = db.getUserByLogin(login);
-                    if (user != null)
-                    {
-                        await Authenticate(login); // аутентификация
+                    await Authenticate(login); // аутентификация
 
-                        return RedirectToAction("Index", "Home");
-                    }
-                    ModelState.AddModelError("", "Некорректные логин и(или) пароль");
+                    return RedirectToAction("Index", "Home");
                 }
+
+                return new NotFoundResult();
             }
             return View();
         }
+        /*
+        $.ajax({
+            method: "POST",
+            url: "/account/login",
+            data: { login : "i.ivanov"},
+            success: function (data) {
+                $("#textbox").text($("#textbox").text() + " " +data);
+                },
+            error: function (er) {
+                console.log(er);
+                console.log(123);
+                }
+            });
+         */
+
+
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(string login)
         {
-            if (ModelState.IsValid)
+            using (var db = new ApplicationContext())
             {
-                using (var db = new ApplicationContext())
+                User user = db.getUserByLogin(login);
+                if (user == null)
                 {
+                    // добавляем пользователя в бд
+                    db.Users.Add(new User { login = login });
+                    await db.SaveChangesAsync();
 
+                    await Authenticate(login); // аутентификация
 
-                    User user = db.getUserByLogin(login);
-                    if (user == null)
-                    {
-                        // добавляем пользователя в бд
-                        db.Users.Add(new User { login = login });
-                        await db.SaveChangesAsync();
-
-                        await Authenticate(login); // аутентификация
-
-                        return RedirectToAction("Index", "Home");
-                    }
-                    else
-                        ModelState.AddModelError("", "Некорректные логин и(или) пароль");
+                    return RedirectToAction("Index", "Home");
                 }
-            }
+                else
+                    ModelState.AddModelError("", "Некорректные логин и(или) пароль");
+            } 
             return View("auth");
         }
 
@@ -80,6 +87,19 @@ namespace eda7k.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login", "Account");
         }
+        /*
+        $.ajax({
+            method: "POST",
+            url: "/account/logout",
+            success: function (data) {
+                $("#textbox").text($("#textbox").text() + " " +data);
+                },
+            error: function (er) {
+                console.log(er);
+                console.log(123);
+                }
+            });
+         */
     }
 
 
