@@ -66,7 +66,7 @@ namespace eda7k.Controllers
                 else
                     ModelState.AddModelError("", "Некорректные логин и(или) пароль");
             } 
-            return View("auth");
+            return View("Login");
         }
 
         private async Task Authenticate(string userName)

@@ -6,7 +6,7 @@ namespace eda7k.Models
     {
         public int id { get; set; }
         public bool is_admin { get; set; }
-        public string last_name { get; set; }
+        public string? last_name { get; set; }
         public string login { get; set; }
         
     }
@@ -23,7 +23,7 @@ namespace eda7k.Models
             );
         private static Func<ApplicationContext,string, User> _getUserByLogin =
             EF.CompileQuery((ApplicationContext db, string login) =>
-                    db.Users.Where(x => x.login == login).FirstOrDefault()
+                    db.Users.FirstOrDefault(x => x.login == login)
             );
         public User[] getUsers()
         {
