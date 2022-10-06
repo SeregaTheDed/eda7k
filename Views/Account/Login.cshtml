@@ -1,8 +1,33 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿
 <div>AUTHORIZATION</div>
 <div>Log</div>
 <div>Pas</div>
+
+<input id="input_login">
+<button id="button_login">Войти</button>
+
+@section scripts
+    {
+    
+    <script>
+        $(document).ready(function () {
+            $('#button_login').click(function (e) {
+                e.preventDefault();
+                var btn = $(this);
+                $.ajax({
+                    method: "POST",
+                    url: "/account/login",
+                   data: { login : $('#input_login').val()},
+                   success: function (data) {
+                        $("#textbox").text($("#textbox").text() + " " +data);
+                        window.location.replace("../home/");
+                        },
+                   error: function (er) {
+                        console.log(er);
+                        console.log(123);
+                        }
+                });
+            })
+        });
+    </script>
+}
