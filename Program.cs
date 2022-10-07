@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using eda7k.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddScoped<DbContext, ApplicationContext>();
+builder.Services.AddScoped<DbContext, DBConnection>();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.Configure<KestrelServerOptions>(options =>

@@ -17,7 +17,7 @@ namespace eda7k.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string login)
         {
-            using (var db = new ApplicationContext())
+            using (var db = new DBConnection())
             {
                 User user = db.getUserByLogin(login);
                 if (user != null)
@@ -50,7 +50,7 @@ namespace eda7k.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(string login)
         {
-            using (var db = new ApplicationContext())
+            using (var db = new DBConnection())
             {
                 User user = db.getUserByLogin(login);
                 if (user == null)

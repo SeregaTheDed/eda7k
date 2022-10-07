@@ -10,19 +10,19 @@ namespace eda7k.Models
         public string login { get; set; }
         
     }
-    public partial class ApplicationContext : DbContext
+    public partial class DBConnection : DbContext
     {
        /* public ApplicationContext(DbContextOptions<ApplicationContext> dbContextOptions)
         : base(dbContextOptions)
         {
         }*/
         public DbSet<User> Users { get; set; }
-        private static Func<ApplicationContext, User[]> _getUsers =
-            EF.CompileQuery((ApplicationContext db) =>
+        private static Func<DBConnection, User[]> _getUsers =
+            EF.CompileQuery((DBConnection db) =>
                     db.Users.ToArray()
             );
-        private static Func<ApplicationContext,string, User> _getUserByLogin =
-            EF.CompileQuery((ApplicationContext db, string login) =>
+        private static Func<DBConnection,string, User> _getUserByLogin =
+            EF.CompileQuery((DBConnection db, string login) =>
                     db.Users.FirstOrDefault(x => x.login == login)
             );
         public User[] getUsers()
