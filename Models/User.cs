@@ -40,11 +40,11 @@ namespace eda7k.Models
         {
             return _getUserByLogin(this, login);
         }
-
-        public User getCurrentUser()
+        public User getUserById(int id)
         {
-            return _getUserById(this, int.Parse(ClaimTypes.NameIdentifier));
+            return _getUserById(this, id);
         }
+
 
     }
 }
