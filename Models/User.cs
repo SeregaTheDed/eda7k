@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace eda7k.Models
 {
@@ -25,6 +28,10 @@ namespace eda7k.Models
             EF.CompileQuery((DBConnection db, string login) =>
                     db.Users.FirstOrDefault(x => x.login == login)
             );
+        private static Func<DBConnection, int, User> _getUserById =
+            EF.CompileQuery((DBConnection db, int id) =>
+                    db.Users.FirstOrDefault(x => x.id == id)
+            );
         public User[] getUsers()
         {
             return _getUsers(this);
@@ -33,6 +40,11 @@ namespace eda7k.Models
         {
             return _getUserByLogin(this, login);
         }
-        
+
+        public User getCurrentUser()
+        {
+            return _getUserById(this, int.Parse(ClaimTypes.NameIdentifier));
+        }
+
     }
 }
