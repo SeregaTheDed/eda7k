@@ -4,7 +4,7 @@ namespace eda7k.Models
 {
     public class Product
     {
-        public int id { get; set; }
+        public int? id { get; set; }
         public int price { get; set; }
         public int category_id { get; set; }
         public int extra { get; set; }

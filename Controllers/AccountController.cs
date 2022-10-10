@@ -55,7 +55,6 @@ namespace eda7k.Controllers
                 User user = db.getUserByLogin(login);
                 if (user == null)
                 {
-                    // добавляем пользователя в бд
                     db.Users.Add(new User { login = login });
                     await db.SaveChangesAsync();
 
