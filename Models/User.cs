@@ -33,11 +33,6 @@ namespace eda7k.Models
         {
             return _getUserByLogin(this, login);
         }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-            var connectionString = config.GetConnectionString("someecom");
-            optionsBuilder.UseSqlServer(connectionString);//M9y-Vqx-Ht3-e8c
-        }
+        
     }
 }
