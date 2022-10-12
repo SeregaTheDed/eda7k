@@ -36,6 +36,24 @@ namespace eda7k.Controllers
             }
             return Ok();
         }
+        [HttpPost]
+        public async Task<IActionResult> UpdateProduct([FromBody]Product modifiedProduct)
+        {
+            using (DBConnection db = new())
+            {
+                var updatingProduct = await db.Products.FirstOrDefaultAsync(x => x.id == modifiedProduct.id);
+                if (updatingProduct == null)
+                    return BadRequest();
+                updatingProduct.id = modifiedProduct.id;
+                updatingProduct.name = modifiedProduct.name;
+                updatingProduct.price = modifiedProduct.price;
+                updatingProduct.extra = modifiedProduct.extra;
+                updatingProduct.availability_tomorrow = modifiedProduct.availability_tomorrow;
+                updatingProduct.category_id = modifiedProduct.category_id;
+                await db.SaveChangesAsync();
+            }
+            return Ok();
+        }
         /*
  $.ajax({
             method: "post",
