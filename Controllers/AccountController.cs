@@ -12,7 +12,7 @@ namespace eda7k.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            return View();
+            return PartialView();
         }
         [HttpPost]
         public async Task<IActionResult> Login(string login)

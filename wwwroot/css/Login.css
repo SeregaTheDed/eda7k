@@ -1,0 +1,54 @@
+﻿#button_login {
+    color: #ff5800;
+    background: #f5e3cb;
+    height:50px;
+    border-radius:10px;
+}
+
+#input_form {
+    width: 300px;
+    height: 200px;
+    border: 3px solid #ff6a00;
+    border-radius: 10%;
+    padding: 10px;
+    margin: 100px auto auto 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content:center;
+}
+
+#input_form > div {
+    font-family: Verdana, Helvetica, Arial, sans-serif;
+    font-weight: 700;
+    color: antiquewhite;
+    font-size:30px;
+}
+
+#login_form {
+    height: 500px;
+    display: flex;
+    justify-content:center;
+    justify-items:center;
+}
+
+body {
+    background-image: url(../images/AuthPhoto.jpeg);
+    background-size:100% 100%;
+    display:flex;
+    justify-content:space-between;
+}
+
+#input_login {
+    font-size: 22px;
+}
+
+
+#fraza {
+    font-family: Verdana, Helvetica, Arial, sans-serif;
+    color: antiquewhite;
+    font-size: 35px;
+   /* position:absolute;
+    margin-left:1000px;
+    margin-top:-400px;*/
+}
