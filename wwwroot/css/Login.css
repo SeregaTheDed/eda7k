@@ -45,10 +45,13 @@ body {
 
 
 #fraza {
+    position: absolute;
+    top: 100px;
+    right: 50px;
     font-family: Verdana, Helvetica, Arial, sans-serif;
     color: antiquewhite;
     font-size: 35px;
-   /* position:absolute;
+    /* position:absolute;
     margin-left:1000px;
     margin-top:-400px;*/
 }
