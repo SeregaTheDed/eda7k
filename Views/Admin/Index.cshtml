@@ -3,16 +3,72 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
-<h1>@Crypt.GetHashPassword("123")</h1>
+<link rel="stylesheet" href="~/css/Index.css">
 
-<h1>a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3</h1>
-<button id="button">Отправить запрос</button>
-<button id="button_auth">Авторизация</button>
-<div id="textbox">132</div>
+<div id="Welcome">
+    Составьте меню на завтра
+</div>
+
+
+<table id="table">
+    <tr>
+        <th width="250">Блюдо</th>
+        <th width="250">Категория</th>
+        <th width="150">Цена</th>
+        <th width="150">Наценка</th>
+        <th width="200">Будет ли завтра</th>
+    </tr>
+    <tr v-for="item in data">
+        <td>
+            <input type="hidden" v-model="item.id" />
+            <input v-model="item.name"/>
+        </td>
+        <td>
+            <input v-model="item.category_id"/>
+        </td>
+        <td>
+            <input v-model="item.price"/>
+        </td>
+        <td>
+            <input v-model="item.extra" />
+        </td>
+        <td>
+            <input type="checkbox" v-model="item.availability_tomorrow" />
+        </td>
+    </tr>
+</table>
+
 @section scripts
     {
     <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script>
+        async function getData() {
+            return await fetch("admin/GetProducts", {
+                method: 'POST'
+            })
+        }
+
+        const Table = {
+            data() {
+                return {
+                    data: []
+                }
+            },
+            async mounted() {
+                const response = await getData();
+                let data = await response.json();
+                console.log(data)
+                this.data = data;
+            },
+            methods:{
+
+            }
+        }
+
+        Vue.createApp(Table).mount('#table')
+    </script>
+
     <script>
         $(document).ready(function () {
             $('#button').click(function (e) {
