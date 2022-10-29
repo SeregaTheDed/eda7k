@@ -100,6 +100,20 @@ arr = [
         "extra": 2,
         "name": "Картофельное пюре с маслом",
         "availability_tomorrow": false
+    },
+         {
+        "price": 23,
+        "category_id": 2,
+        "extra": 2,
+        "name": "пюре1",
+        "availability_tomorrow": false
+    },
+         {
+        "price": 24,
+        "category_id": 2,
+        "extra": 2,
+        "name": "Картофельное пюре2 с маслом",
+        "availability_tomorrow": false
     }
 ]
 

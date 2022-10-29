@@ -9,9 +9,47 @@
     Составьте меню на завтра
 </div>
 
+@*            $.ajax({
+                method: "post",
+                url: "/admin/DeleteProductById",
+                data: {"id":1},
+                success: function (data) {
+                    console.log(data);
+                    },
+                error: function (er) {
+                    }
+            });        
+                    
+            arr = [{
+                "price": 22,
+                "category_id": 2,
+                "extra": 2,
+                "name": "Картофельное пюре с маслом",
+                "availability_tomorrow": false
+            }]
+
+            arr = JSON.stringify(arr);
+
+            $.ajax({
+                dataType: 'json',
+                contentType: "application/json",
+                type: "POST",
+                url: "/admin/AddNewProducts",
+                data: arr,
+                success: function (data) {
+                    console.log(data);
+                    },
+                error: function (er) {
+                    }
+            });*@
+        
+
+<button id="AddBtn">Добавить</button>
+<button id="SaveBtn">Сохранить</button>
 
 <table id="table">
     <tr>
+        <th width="20"></th>
         <th width="250">Блюдо</th>
         <th width="250">Категория</th>
         <th width="150">Цена</th>
@@ -20,7 +58,10 @@
     </tr>
     <tr v-for="item in data">
         <td>
-            <input type="hidden" v-model="item.id" />
+            <button id="button_X" v-on:click="deleteProd(item.id)">X</button>
+            <input type="hidden"  v-model="item.id" />
+        </td>
+        <td>            
             <input v-model="item.name"/>
         </td>
         <td>
@@ -42,13 +83,77 @@
     {
     <script src="~/lib/jquery/dist/jquery.js"></script>
     <script src="https://unpkg.com/vue@next"></script>
+
+@*    <script>
+        $(document).ready(function () {
+            $('#button_X').click(function (e) {
+                e.preventDefault();
+                var btn = $(this);
+                $.ajax({
+                method: "post",
+                url: "/admin/DeleteProductById",
+                data: {"id": item.id},
+                success: function (data) {
+                    console.log(data);
+                    },
+                error: function (er) {
+                    console.log(er)
+                    }
+            });
+            })
+        });
+    </script>*@
+
+@*    <script>
+        new Vue({
+            el: '#button_X',
+            methods: {
+                delete: function(id){
+                    console.log(123333)
+                    axios.post('/admin/DeleteProductById', {id: id})
+                    .then(response => {
+                    console.log(response.data)
+                    })
+                    .catch(error => {
+                    console.log(error)
+                    })
+                }
+            }
+        })
+    </script>*@
+
     <script>
         async function getData() {
-            return await fetch("admin/GetProducts", {
+            return await fetch("admin/GetProducts",{
                 method: 'POST'
             })
         }
 
+        async function DeleteProduct(id){
+             $.ajax({
+            method: "post",
+            url: "/admin/DeleteProductById",
+            data: {"id":id},
+            success: function (data) {
+                //console.log(data);
+                },
+            error: function (er) {
+
+                }
+            });
+        }
+        function remove(arr, item)
+{
+    var index = arr.indexOf(item);
+    return [
+ 
+        // часть массива перед данным элементом
+        ...arr.slice(0, index),
+ 
+        // часть массива после данного элемента
+        ...arr.slice(index + 1)
+    ];
+}
         const Table = {
             data() {
                 return {
@@ -58,11 +163,18 @@
             async mounted() {
                 const response = await getData();
                 let data = await response.json();
-                console.log(data)
                 this.data = data;
             },
             methods:{
 
+                deleteProd: async function(id){
+                    const response = await DeleteProduct(id);
+                    var result = this.data.findIndex(obj => {
+                        return obj.id === id
+                    })
+                    this.data.splice(result, 1)
+                    //this.data.remove(result);
+                }
             }
         }
 
