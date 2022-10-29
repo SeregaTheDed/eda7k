@@ -9,242 +9,231 @@
     Составьте меню на завтра
 </div>
 
-@*            $.ajax({
-                method: "post",
-                url: "/admin/DeleteProductById",
-                data: {"id":1},
-                success: function (data) {
-                    console.log(data);
-                    },
-                error: function (er) {
-                    }
-            });        
-                    
-            arr = [{
-                "price": 22,
-                "category_id": 2,
-                "extra": 2,
-                "name": "Картофельное пюре с маслом",
-                "availability_tomorrow": false
-            }]
+@*
 
-            arr = JSON.stringify(arr);
+    arr = [{
+    "price": 22,
+    "category_id": 2,
+    "extra": 2,
+    "name": "Картофельное пюре с маслом",
+    "availability_tomorrow": false
+    }]
 
-            $.ajax({
+    arr = JSON.stringify(arr);
+
+    $.ajax({
+    dataType: 'json',
+    contentType: "application/json",
+    type: "POST",
+    url: "/admin/AddNewProducts",
+    data: arr,
+    success: function (data) {
+    console.log(data);
+    },
+    error: function (er) {
+    }
+    });
+
+*@
+
+<div id="table">
+    <button id="AddBtn" v-on:click="AddNewLine">Добавить</button>
+    <button id="SaveBtn" v-on:click="SaveChanges">Сохранить</button>
+    <table>
+        <tr>
+            <th width="20"></th>
+            <th width="250">Блюдо</th>
+            <th width="250">Категория</th>
+            <th width="150">Цена</th>
+            <th width="150">Наценка</th>
+            <th width="200">Будет ли завтра</th>
+        </tr>
+        <tr v-for="item in data">
+            <td>
+                <button id="button_X" v-on:click="deleteProd(item.id)">X</button>
+                <input type="hidden" v-model="item.id" />
+            </td>
+            <td>
+                <input v-model="item.name" />
+            </td>
+            <td>
+                <input v-model="item.category_id" />
+            </td>
+            <td>
+                <input v-model="item.price" />
+            </td>
+            <td>
+                <input v-model="item.extra" />
+            </td>
+            <td>
+                <input type="checkbox" v-model="item.availability_tomorrow" />
+            </td>
+        </tr>
+    </table>
+</div>
+
+@section scripts
+    {
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="https://unpkg.com/vue@next"></script>
+
+<script>
+    async function getData() {
+        return await fetch("admin/GetProducts",{
+            method: 'POST'
+        })
+    }
+
+    async function DeleteProduct(id){
+         $.ajax({
+        method: "post",
+        url: "/admin/DeleteProductById",
+        data: {"id":id},
+        success: function (data) {
+            },
+        error: function (er) {
+
+            }
+        });
+    }
+
+    const Table = {
+        data() {
+            return {
+                data: []
+            }
+        },
+        async mounted() {
+            const response = await getData();
+            let data = await response.json();
+            this.data = data;
+        },
+        methods:{
+
+            deleteProd: async function(id){
+                if (id != undefined)
+                {
+                    const response = await DeleteProduct(id);
+                }
+                var result = this.data.findIndex(obj => {
+                    return obj.id === id
+                })
+                this.data.splice(result, 1)
+
+            },
+            AddNewLine: function(){
+                emptyProduct = {
+                    "price": null,
+                    "category_id": null,
+                    "extra": null,
+                    "name": "",
+                    "availability_tomorrow": false
+                }
+                this.data.push(emptyProduct)
+            },
+            SaveChanges: async function(){
+                //-------------------------------------------
+                    this.data.filter(product => product.id != undefined).forEach(element =>
+                    $.ajax({
+                        dataType: 'json',
+                        contentType: "application/json",
+                        type: "POST",
+                        url: "/admin/UpdateProduct",
+                        data: JSON.stringify(element),
+                        success: function (data) {  
+                            
+                            },
+                        error: function (er) {                    
+                            }
+                    }))                    
+                //------------------------------------------- 
+                arr = JSON.stringify(this.data.filter(product => product.id == undefined));
+                $.ajax({
                 dataType: 'json',
                 contentType: "application/json",
                 type: "POST",
                 url: "/admin/AddNewProducts",
                 data: arr,
                 success: function (data) {
-                    console.log(data);
+                    this.data = data;
+                  
+                    alert("Продукты успешно сохранены!");
                     },
                 error: function (er) {
+                    alert("Ошибка! Проверьте введенные данные!");
                     }
-            });*@
-        
-
-<button id="AddBtn">Добавить</button>
-<button id="SaveBtn">Сохранить</button>
-
-<table id="table">
-    <tr>
-        <th width="20"></th>
-        <th width="250">Блюдо</th>
-        <th width="250">Категория</th>
-        <th width="150">Цена</th>
-        <th width="150">Наценка</th>
-        <th width="200">Будет ли завтра</th>
-    </tr>
-    <tr v-for="item in data">
-        <td>
-            <button id="button_X" v-on:click="deleteProd(item.id)">X</button>
-            <input type="hidden"  v-model="item.id" />
-        </td>
-        <td>            
-            <input v-model="item.name"/>
-        </td>
-        <td>
-            <input v-model="item.category_id"/>
-        </td>
-        <td>
-            <input v-model="item.price"/>
-        </td>
-        <td>
-            <input v-model="item.extra" />
-        </td>
-        <td>
-            <input type="checkbox" v-model="item.availability_tomorrow" />
-        </td>
-    </tr>
-</table>
-
-@section scripts
-    {
-    <script src="~/lib/jquery/dist/jquery.js"></script>
-    <script src="https://unpkg.com/vue@next"></script>
-
-@*    <script>
-        $(document).ready(function () {
-            $('#button_X').click(function (e) {
-                e.preventDefault();
-                var btn = $(this);
-                $.ajax({
-                method: "post",
-                url: "/admin/DeleteProductById",
-                data: {"id": item.id},
-                success: function (data) {
-                    console.log(data);
-                    },
-                error: function (er) {
-                    console.log(er)
-                    }
-            });
-            })
-        });
-    </script>*@
-
-@*    <script>
-        new Vue({
-            el: '#button_X',
-            methods: {
-                delete: function(id){
-                    console.log(123333)
-                    axios.post('/admin/DeleteProductById', {id: id})
-                    .then(response => {
-                    console.log(response.data)
-                    })
-                    .catch(error => {
-                    console.log(error)
-                    })
+                });
+                
                 }
             }
-        })
-    </script>*@
-
-    <script>
-        async function getData() {
-            return await fetch("admin/GetProducts",{
-                method: 'POST'
-            })
         }
 
-        async function DeleteProduct(id){
-             $.ajax({
-            method: "post",
-            url: "/admin/DeleteProductById",
-            data: {"id":id},
-            success: function (data) {
-                //console.log(data);
+    Vue.createApp(Table).mount('#table')
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#button').click(function (e) {
+            e.preventDefault();
+            var btn = $(this);
+            $.ajax({
+                method: "POST",
+                url: "/admin/massiv",
+                dataType: "json",
+                success: function (products) {
+                    $("#textbox").textContent += products;
+                    var group = JSON.stringify(products);
+                    console.log(group);
+                    $.ajax({
+                        dataType: 'json',
+                        contentType: "application/json",
+                        type: "POST",
+                        url: "/admin/massiv2",
+                        data: group,
+                        success: function (data) {
+                            console.log("output : " + JSON.stringify(data));
+                            data.forEach(
+                                element => {
+                                    $("#textbox").text($("#textbox").text() + " " + element.id);
+                                }
+                            );
+                        },
+                        error: function (er) {
+                            console.log(er);
+                        }
+                    });
+
                 },
-            error: function (er) {
-
+                error: function (er) {
+                    console.log(er);
                 }
             });
-        }
-        function remove(arr, item)
-{
-    var index = arr.indexOf(item);
-    return [
- 
-        // часть массива перед данным элементом
-        ...arr.slice(0, index),
- 
-        // часть массива после данного элемента
-        ...arr.slice(index + 1)
-    ];
-}
-        const Table = {
-            data() {
-                return {
-                    data: []
+        })
+    });
+
+
+
+    $(document).ready(function () {
+        $('#button_auth').click(function (e) {
+            e.preventDefault();
+            var btn = $(this);
+            $.ajax({
+                method: "POST",
+                url: "/Authentication/Authentication",
+                data: {
+                    "login": "admin"
+                },
+                success: function (data) {
+                    $("#textbox").text($("#textbox").text() + " " +data);
+
+                },
+                error: function (er) {
+                    console.log(er);
+                    console.log(123);
                 }
-            },
-            async mounted() {
-                const response = await getData();
-                let data = await response.json();
-                this.data = data;
-            },
-            methods:{
-
-                deleteProd: async function(id){
-                    const response = await DeleteProduct(id);
-                    var result = this.data.findIndex(obj => {
-                        return obj.id === id
-                    })
-                    this.data.splice(result, 1)
-                    //this.data.remove(result);
-                }
-            }
-        }
-
-        Vue.createApp(Table).mount('#table')
-    </script>
-
-    <script>
-        $(document).ready(function () {
-            $('#button').click(function (e) {
-                e.preventDefault();
-                var btn = $(this);
-                $.ajax({
-                    method: "POST",
-                    url: "/admin/massiv",
-                    dataType: "json",
-                    success: function (products) {
-                        $("#textbox").textContent += products;
-                        var group = JSON.stringify(products);
-                        console.log(group);
-                        $.ajax({
-                            dataType: 'json',
-                            contentType: "application/json",
-                            type: "POST",
-                            url: "/admin/massiv2",
-                            data: group,
-                            success: function (data) {
-                                //debugger
-                                console.log("output : " + JSON.stringify(data));
-                                data.forEach(
-                                    element => {
-                                        $("#textbox").text($("#textbox").text() + " " + element.id);
-                                    }
-                                );
-                            },
-                            error: function (er) {
-                                console.log(er);
-                            }
-                        });
-                        
-                    },
-                    error: function (er) {
-                        console.log(er);
-                    }
-                });
-            })
-        });
-
-
-
-        $(document).ready(function () {
-            $('#button_auth').click(function (e) {
-                e.preventDefault();
-                var btn = $(this);
-                $.ajax({
-                    method: "POST",
-                    url: "/Authentication/Authentication",
-                    data: {
-                        "login": "admin"
-                    },
-                    success: function (data) {
-                        $("#textbox").text($("#textbox").text() + " " +data);
-                        
-                    },
-                    error: function (er) {
-                        console.log(er);
-                        console.log(123);
-                    }
-                });
-            })
-        });
-    </script>
+            });
+        })
+    });
+</script>
 }
 
