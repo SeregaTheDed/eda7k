@@ -22,3 +22,10 @@ td, th {
     padding: 5px; /* Поля вокруг текста */
     border: 1px solid black; /* Рамка вокруг ячеек */
 }
+input[type=checkbox] {
+    transform: scale(1.5);
+}
+
+#button_logout {
+    margin-top: 20px;
+}

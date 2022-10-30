@@ -70,7 +70,11 @@
             </td>
         </tr>
     </table>
+    <button v-on:click="logout" class="button" id="button_logout">Выйти</button>
 </div>
+
+
+
 
 @section scripts
     {
@@ -109,6 +113,14 @@
             this.data = data;
         },
         methods:{
+
+            logout: function(){
+                fetch("account/logout",{
+                        method: 'POST'
+                }).then(()=>{
+                    location.reload();
+                })
+            },
 
             deleteProd: async function(id){
                 if (id != undefined)
