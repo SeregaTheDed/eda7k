@@ -57,7 +57,14 @@
                 <input v-model="item.name" />
             </td>
             <td>
-                <input v-model="item.category_id" />
+                <select v-model="item.category_id">                    
+                    <option value="1">Салат</option>
+                    <option value="2">Гарнир</option>
+                    <option value="3">Барбекю</option>
+                    <option value="4">Плов</option>
+                    <option value="5">Корнишон</option>
+                </select>
+                <!--<input v-model="item.category_id" />-->
             </td>
             <td>
                 <input v-model="item.price" />
@@ -143,9 +150,25 @@
                 }
                 this.data.push(emptyProduct)
             },
-            SaveChanges: async function(){
+            SaveChanges: async function(){   
+                console.log(this.data)
+                $.ajax({
+                        dataType: 'json',
+                        contentType: "application/json",
+                        type: "POST",
+                        url: "/admin/UpdateProductTheBest",
+                        data: JSON.stringify(this.data),
+                        success: function (data) {  
+                            alert("Сохранено")
+                            },
+                        error: function (er) {                    
+                            }
+                    })
+
+
+    
                 //-------------------------------------------
-                    this.data.filter(product => product.id != undefined).forEach(element =>
+                /*    this.data.filter(product => product.id != undefined).forEach(element =>
                     $.ajax({
                         dataType: 'json',
                         contentType: "application/json",
@@ -175,7 +198,8 @@
                     alert("Ошибка! Проверьте введенные данные!");
                     }
                 });
-                
+                */
+
                 }
             }
         }

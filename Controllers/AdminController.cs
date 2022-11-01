@@ -57,6 +57,41 @@ namespace eda7k.Controllers
             return Ok();
         }
 
+        //Пытаемся сделать лучше
+        [HttpPost]
+        public async Task<IActionResult> UpdateProductTheBest([FromBody] Product[] modifiedProducts)
+        {
+            using (DBConnection db = new())
+            {
+                foreach (var item in modifiedProducts)
+                {
+                    var updatingProduct = await db.Products.FirstOrDefaultAsync(x => x.id == item.id);
+                    if (updatingProduct == null)
+                    {
+                        updatingProduct = new Product();
+                        updatingProduct.id = item.id;
+                        updatingProduct.name = item.name;
+                        updatingProduct.price = item.price;
+                        updatingProduct.extra = item.extra;
+                        updatingProduct.availability_tomorrow = item.availability_tomorrow;
+                        updatingProduct.category_id = item.category_id;
+                        db.Products.Add(updatingProduct);
+                    }
+                    else
+                    {
+                        updatingProduct.id = item.id;
+                        updatingProduct.name = item.name;
+                        updatingProduct.price = item.price;
+                        updatingProduct.extra = item.extra;
+                        updatingProduct.availability_tomorrow = item.availability_tomorrow;
+                        updatingProduct.category_id = item.category_id;
+                    }
+                }
+                await db.SaveChangesAsync();
+            }
+            return Ok();
+        }
+
         // POST: AdminController/GetProducts
         [HttpPost]
         public async Task<IActionResult> GetCategories()
