@@ -136,7 +136,30 @@ namespace eda7k.Controllers
                 await db.SaveChangesAsync();
                 return new OkObjectResult(db.Products.ToArray());
             }
-            
+        }
+        [HttpPost]
+        public async Task<IActionResult> GetConfig()
+        {
+            if (_user.is_admin == false)
+                return NotFound();
+            using (DBConnection db = new())
+            {
+                return new OkObjectResult(db.GetConfig());
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> SetConfig([FromBody]Config newConfig)
+        {
+            if (_user.is_admin == false)
+                return NotFound();
+            using (DBConnection db = new())
+            {
+                var currentConfig = db.GetConfig();
+                currentConfig.last_time_to_do_order = newConfig.last_time_to_do_order;
+                currentConfig.next_order_day = newConfig.next_order_day;
+                await db.SaveChangesAsync();
+            }
+            return Ok();
         }
     }
 

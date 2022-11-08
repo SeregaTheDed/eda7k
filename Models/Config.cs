@@ -11,6 +11,14 @@ namespace eda7k.Models
 
     public partial class DBConnection : DbContext
     {
+        private static Func<DBConnection, Config> _getConfig =
+            EF.CompileQuery((DBConnection db) =>
+                    db.Config.First()
+            );
+        public Config GetConfig()
+        {
+            return _getConfig(this);
+        } 
         public DbSet<Config> Config { get; set; }
     }
 }
