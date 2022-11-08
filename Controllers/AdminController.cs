@@ -33,6 +33,8 @@ namespace eda7k.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteProductById(int id)
         {
+            if (_user.is_admin == false)
+                return NotFound();
             using (DBConnection db = new())
             {
                 var deletingProduct = await db.Products.FirstOrDefaultAsync(x => x.id == id);
@@ -45,6 +47,8 @@ namespace eda7k.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateProduct([FromBody]Product modifiedProduct)
         {
+            if (_user.is_admin == false)
+                return NotFound();
             using (DBConnection db = new())
             {
                 var updatingProduct = await db.Products.FirstOrDefaultAsync(x => x.id == modifiedProduct.id);
@@ -65,6 +69,8 @@ namespace eda7k.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateProductTheBest([FromBody] Product[] modifiedProducts)
         {
+            if (_user.is_admin == false)
+                return NotFound();
             using (DBConnection db = new())
             {
                 foreach (var item in modifiedProducts)
