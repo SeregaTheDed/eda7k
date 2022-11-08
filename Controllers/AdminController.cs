@@ -13,15 +13,19 @@ namespace eda7k.Controllers
     [Authorize]
     public class AdminController : Controller
     {
+        private User _user;
+        public AdminController(IHttpContextAccessor httpContextAccessor)
+        {
+            using (var db = new DBConnection())
+            {
+                _user = db.getUserByLogin(httpContextAccessor.HttpContext.User.Identities.First().Name);
+            }
+        }
         // GET: AdminController
         public async Task<IActionResult> Index()
         {
-            return View();
-        }
-
-        // GET: AdminController/auth
-        public async Task<IActionResult> Auth()
-        {
+            if (_user.is_admin == false)
+                return NotFound();
             return View();
         }
 
