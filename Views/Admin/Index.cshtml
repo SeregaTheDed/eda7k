@@ -4,37 +4,11 @@
 }
 
 <link rel="stylesheet" href="~/css/Index.css">
+<link rel="stylesheet" href="~/css/air-datepicker.css">
 
 <div id="Welcome">
     Составьте меню на завтра
 </div>
-
-@*
-
-    arr = [{
-    "price": 22,
-    "category_id": 2,
-    "extra": 2,
-    "name": "Картофельное пюре с маслом",
-    "availability_tomorrow": false
-    }]
-
-    arr = JSON.stringify(arr);
-
-    $.ajax({
-    dataType: 'json',
-    contentType: "application/json",
-    type: "POST",
-    url: "/admin/AddNewProducts",
-    data: arr,
-    success: function (data) {
-    console.log(data);
-    },
-    error: function (er) {
-    }
-    });
-
-*@
 
 <div id="table">
     <button id="AddBtn" v-on:click="AddNewLine">Добавить</button>
@@ -75,6 +49,11 @@
         </tr>
     </table>
     <button v-on:click="logout" class="button" id="button_logout">Выйти</button>
+
+    <div>
+        <input placeholder="дата на которую заказывают" type="text" id="airdatepicker" class="form-control" />
+        <input placeholder="дата и время до которого можно будет сделать заказ" type="text" id="airtimepicker" class="form-control" />
+    </div>
 </div>
 
 
@@ -84,6 +63,7 @@
     {
 <script src="~/lib/jquery/dist/jquery.js"></script>
 <script src="https://unpkg.com/vue@next"></script>
+<script src="~/js/air-datepicker.js"></script>
 
 <script>
     async function getData() {
@@ -96,17 +76,15 @@
             method: 'POST'
         })
     }
-
     async function DeleteProduct(id){
-         $.ajax({
+        $.ajax({
         method: "post",
         url: "/admin/DeleteProductById",
         data: {"id":id},
         success: function (data) {
-            },
+        },
         error: function (er) {
-
-            }
+        }
         });
     }
 
@@ -164,14 +142,13 @@
                         data: JSON.stringify(this.data),
                         success: function (data) {  
                             alert("Сохранено")
-                            },
+                        },
                         error: function (er) {                    
-                            }
-                    })
-                }
+                        }
+                })
             }
-
         }
+    }
 
     Vue.createApp(Table).mount('#table')
 </script>
@@ -216,8 +193,6 @@
         })
     });
 
-
-
     $(document).ready(function () {
         $('#button_auth').click(function (e) {
             e.preventDefault();
@@ -238,6 +213,16 @@
                 }
             });
         })
+    });
+</script>
+
+<script>
+    new AirDatepicker('#airdatepicker', {
+        position: 'top left'
+    });
+    new AirDatepicker('#airtimepicker', {
+        position: 'top left',
+        timepicker: 'true'
     });
 </script>
 }
