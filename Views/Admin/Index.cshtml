@@ -217,13 +217,63 @@
 </script>
 
 <script>
-    new AirDatepicker('#airdatepicker', {
-        position: 'top left'
-    });
-    new AirDatepicker('#airtimepicker', {
+    let config;
+        (async () => {
+        async function GetConfig() {
+            return await fetch("admin/GetConfig", {
+                method: 'POST'
+            })
+        }
+            Date.prototype.addHours = function (h) {
+                this.setHours(this.getHours() + h);
+                return this;
+            }
+        async function SetConfig() {
+            //config = { next_order_day: '123456789', last_time_to_do_order: '123456789' }
+                $.ajax({
+                    dataType: 'json',
+                    contentType: "application/json",
+                    method: "POST",
+                    url: "admin/SetConfig",
+                    data: JSON.stringify(config),
+                    success: function (data) {
+                        console.log(data);
+                    },
+                    error: function (er) {
+                        console.log(er);
+                    }
+                });
+        }
+
+        async function GetData() {
+            const res2 = await GetConfig();
+            let cat2 = await res2.json();
+            return cat2;
+        }
+
+        config = await GetData();
+
+    let caled1 = new AirDatepicker('#airdatepicker', {
         position: 'top left',
-        timepicker: 'true'
+            selectedDates: [config.next_order_day],
+                onSelect({date, formattedDate, datepicker})
+                {
+                    config.next_order_day = date.addHours(3)
+                    SetConfig()
+                }
+
     });
+            let caled2 = new AirDatepicker('#airtimepicker', {
+        position: 'top left',
+        timepicker: 'true',
+                selectedDates: [config.last_time_to_do_order],
+                onSelect({ date, formattedDate, datepicker }) 
+                {
+                    config.last_time_to_do_order = date.addHours(3)
+                    SetConfig()
+                }
+            });
+        })();
 </script>
 }
 

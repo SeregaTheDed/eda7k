@@ -154,11 +154,18 @@ namespace eda7k.Controllers
                 return NotFound();
             using (DBConnection db = new())
             {
-                var currentConfig = db.GetConfig();
+                var currentConfig = await db.Config.FirstOrDefaultAsync();
                 currentConfig.last_time_to_do_order = newConfig.last_time_to_do_order;
                 currentConfig.next_order_day = newConfig.next_order_day;
                 await db.SaveChangesAsync();
             }
+            /*using (DBConnection db = new())
+            {
+                var currentConfig = await db.Config.FirstOrDefaultAsync();
+                currentConfig.last_time_to_do_order = newConfig.last_time_to_do_order;
+                currentConfig.next_order_day = newConfig.next_order_day;
+                await db.SaveChangesAsync();
+            }*/
             return Ok();
         }
     }

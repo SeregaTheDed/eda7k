@@ -2,9 +2,9 @@
 
 namespace eda7k.Models
 {
-    [Keyless]
     public class Config
     {
+        public int id { get; set; }
         public DateTime next_order_day { get; set; }
         public DateTime last_time_to_do_order { get; set; }
     }

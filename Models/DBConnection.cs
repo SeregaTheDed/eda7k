@@ -9,6 +9,7 @@ namespace eda7k.Models
             var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
             var connectionString = config.GetConnectionString("someecom");
             optionsBuilder.UseSqlServer(connectionString);//M9y-Vqx-Ht3-e8c
+            optionsBuilder.LogTo(System.Console.WriteLine, new[] { DbLoggerCategory.Database.Command.Name });
         }
     }
 }
