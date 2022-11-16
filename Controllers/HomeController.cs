@@ -30,9 +30,13 @@ namespace eda7k.Controllers
         {
             using (DBConnection db = new())
             {
+                if (DateTime.Now > (await db.Config.FirstAsync()).last_time_to_do_order)
+                    return new OkObjectResult(new Product[0]);
+
                 return new OkObjectResult(db.Products.Where(x => x.availability_tomorrow).ToArray());
             }
         }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

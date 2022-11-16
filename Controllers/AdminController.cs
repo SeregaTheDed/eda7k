@@ -108,7 +108,7 @@ namespace eda7k.Controllers
         {
             using (DBConnection db = new())
             {
-                return new OkObjectResult(db.Categories.ToArray());
+                return new OkObjectResult(await db.Categories.ToArrayAsync());
             }
         }
 
@@ -118,7 +118,7 @@ namespace eda7k.Controllers
         {
             using (DBConnection db = new())
             {
-                return new OkObjectResult(db.Products.ToArray());
+                return new OkObjectResult(await db.Products.ToArrayAsync());
             }
         }
 
@@ -144,7 +144,7 @@ namespace eda7k.Controllers
                 return NotFound();
             using (DBConnection db = new())
             {
-                return new OkObjectResult(db.GetConfig());
+                return new OkObjectResult(await db.GetConfigAsync());
             }
         }
         [HttpPost]

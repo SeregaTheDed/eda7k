@@ -11,13 +11,13 @@ namespace eda7k.Models
 
     public partial class DBConnection : DbContext
     {
-        private static Func<DBConnection, Config> _getConfig =
-            EF.CompileQuery((DBConnection db) =>
-                    db.Config.First()
+        private static Func<DBConnection, Task<Config>> _getConfig =
+            EF.CompileAsyncQuery( (DBConnection db) =>
+                         db.Config.First()
             );
-        public Config GetConfig()
+        public async Task<Config> GetConfigAsync()
         {
-            return _getConfig(this);
+            return await _getConfig(this);
         } 
         public DbSet<Config> Config { get; set; }
     }
