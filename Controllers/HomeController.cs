@@ -37,6 +37,66 @@ namespace eda7k.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> DoOrder([FromBody] (int, int)[] productIdsAndCounts)
+        {
+            using (DBConnection db = new())
+            {
+                var config = await db.GetConfigAsync();
+                Order currentOrder = new Order
+                {
+                    customer_name = _user.last_name,
+                    date = config.next_order_day,
+                    status_id = 1,
+                    user_id= _user.id,
+                };
+                await db.SaveChangesAsync();
+                int idOfCurrentOrder = currentOrder.id.Value;
+                foreach (var item in productIdsAndCounts)
+                {
+                    int productId = item.Item1;
+                    int Count = item.Item2;
+                    db.Rel_orders_products.Add(new Rel_orders_product
+                    {
+                        order_id = idOfCurrentOrder,
+                        product_id = productId,
+                        count = Count,
+                    });
+                }
+                await db.SaveChangesAsync();
+                return new OkResult();
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetAllOrders()
+        {
+            //(Product, int)[]
+            using (DBConnection db = new())
+            {
+                // TODO: optimize queries
+                var allOrderIds = db.Orders
+                    .Where(x => x.user_id == _user.id)
+                    .Select(x => x.id);
+                List<List<(Product, int)>> orders = new List<List<(Product, int)>>();
+
+                foreach (var OrderId in allOrderIds)
+                {
+                    List<(Product, int)> currentOrder = new List<(Product, int)>();
+                    foreach (var item in db.Rel_orders_products
+                        .Where(x => x.order_id == OrderId))
+                    {
+                        var currentProduct = await db.Products.FirstOrDefaultAsync(x => x.id == item.product_id);
+                        if (currentProduct == null)
+                            currentProduct = Product.GetEmptyProduct();
+                        currentOrder.Add((currentProduct, item.count));
+                    }
+                    orders.Add(currentOrder);
+                }
+                return new OkObjectResult(orders);
+            }
+        }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

@@ -2,9 +2,9 @@
 
 namespace eda7k.Models
 {
-    [Keyless]
     public class Rel_orders_product
     {
+        public int? id { get; set; }
         public int order_id { get; set; }
         public int product_id { get; set; }
         public int count { get; set; }

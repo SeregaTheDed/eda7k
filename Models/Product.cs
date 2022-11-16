@@ -11,6 +11,18 @@ namespace eda7k.Models
         public string name { get; set; }
         public bool availability_tomorrow { get; set; }
 
+        public static Product GetEmptyProduct()
+        {
+            return new Product 
+            { 
+                id = -1,
+                price = 0,
+                category_id = 0,
+                extra = 0,
+                name = "Удаленный продукт",
+                availability_tomorrow = false,
+            };
+        }
     }
     public partial class DBConnection : DbContext
     {

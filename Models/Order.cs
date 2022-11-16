@@ -4,7 +4,7 @@ namespace eda7k.Models
 {
     public class Order
     {
-        public int id { get; set; }
+        public int? id { get; set; }
         public string customer_name { get; set; }
         public DateTime date { get; set; }
         public int user_id { get; set; }
