@@ -9,6 +9,11 @@ using System.Security.Claims;
 
 namespace eda7k.Controllers
 {
+    public class OrderProduct
+    {
+        public int ProductId { get; set; }
+        public int Count { get; set; }
+    }
     [Authorize]
     public class HomeController : Controller
     {
@@ -38,7 +43,7 @@ namespace eda7k.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DoOrder([FromBody] (int, int)[] productIdsAndCounts)
+        public async Task<IActionResult> DoOrder([FromBody] OrderProduct[] productIdsAndCounts)
         {
             using (DBConnection db = new())
             {
@@ -50,18 +55,17 @@ namespace eda7k.Controllers
                     status_id = 1,
                     user_id= _user.id,
                 };
+                db.Orders.Add(currentOrder);
                 await db.SaveChangesAsync();
                 int idOfCurrentOrder = currentOrder.id.Value;
-                foreach (var item in productIdsAndCounts)
+                foreach (var orderProduct in productIdsAndCounts.Where(x => x.Count > 0))
                 {
-                    int productId = item.Item1;
-                    int Count = item.Item2;
                     db.Rel_orders_products.Add(new Rel_orders_product
                     {
                         order_id = idOfCurrentOrder,
-                        product_id = productId,
-                        count = Count,
-                    });
+                        product_id = orderProduct.ProductId,
+                        count = orderProduct.Count,
+                });
                 }
                 await db.SaveChangesAsync();
                 return new OkResult();

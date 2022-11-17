@@ -5,8 +5,97 @@
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <div id="textbox">Result: </div>
+
+    <div id="table">
+        <table>
+            <tr>
+            <th width="20"></th>
+            <th width="250">Блюдо</th>
+            <th width="150">Цена</th>
+            <th width="150">Общая цена</th>
+            <th width="150">Количество</th>
+            </tr>
+
+            <tr v-for="item in data">
+            <td>
+                <input type="hidden" v-model="item.id" />
+            </td>
+            <td>
+                <input v-model="item.name" />
+            </td>
+            <td>
+                <input v-model="item.price" />
+            </td>
+            <td>
+                <input/>
+            </td>
+            <td>
+                <button v-on:click="DecCount(item)">-</button>
+                <p>{{item.count}}</p>
+                <button v-on:click="item.count += 1">+</button>
+            </td>
+        </tr>
+        </table>
+        <button v-on:click="Order">Заказать</button>
+    </div>
+
+
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="~/js/air-datepicker.js"></script>
     <script>
-        
+        async function GetProductsForOrder() {
+        return await fetch("home/GetProductsForOrder",{
+            method: 'POST'
+        })
+        }
+
+
+
+        const Table = {
+        data() {            
+            return {
+                data: []
+            }
+        },
+        async mounted() {
+            const response = await GetProductsForOrder();
+            console.log(response);
+            let data = await response.json();
+            this.data = data;
+            for(let i = 0; i < data.length; i++){
+            data[i].count = 0;
+        }
+        },
+        methods:{
+            DecCount: function(item){
+                if (item.count > 0)
+                    item.count--
+            },
+            Order: async function(){
+                let orders = new Array();
+                for(let i = 0; i < this.data.length; i++){
+                    orders.push({ProductId: this.data[i].id, Count: this.data[i].count})
+                }
+                $.ajax({
+                dataType: 'json',
+                contentType: "application/json",
+                method: "post",
+                url: "/home/DoOrder",
+                data: JSON.stringify(orders),
+                success: function (data) {
+                },
+                error: function (er) {
+                }
+                });                  
+            }
+        }
+    }
+
+    Vue.createApp(Table).mount('#table')
+
+
+
         var group = { 'listofusers': listofusers };
         console.log(group);
         $.ajax({
