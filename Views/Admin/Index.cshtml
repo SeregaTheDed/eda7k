@@ -66,6 +66,11 @@
 <script src="~/js/air-datepicker.js"></script>
 
 <script>
+        async function getData() {
+            return await fetch("admin/GetProducts", {
+                method: 'POST'
+            })
+        }
     async function GetProductsForOrder() {
         return await fetch("home/GetProductsForOrder",{
             method: 'POST'

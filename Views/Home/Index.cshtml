@@ -2,14 +2,19 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <div id="textbox">Result: </div>
+<link rel="stylesheet" href="~/css/Table2.css">
 
-    <div id="table">
-        <table>
+
+
+<div class="text-center">
+   
+    <div id="Welcome">
+        Что будем кушать?
+    </div>
+
+    <div>
+        <table id ="table" class="table2">
             <tr>
-            <th width="20"></th>
             <th width="250">Блюдо</th>
             <th width="150">Цена</th>
             <th width="150">Общая цена</th>
@@ -19,8 +24,6 @@
             <tr v-for="item in data">
             <td>
                 <input type="hidden" v-model="item.id" />
-            </td>
-            <td>
                 <input v-model="item.name" />
             </td>
             <td>
@@ -30,15 +33,16 @@
                 <input/>
             </td>
             <td>
-                <button v-on:click="DecCount(item)">-</button>
-                <p>{{item.count}}</p>
-                <button v-on:click="item.count += 1">+</button>
+                <div class="plus-minus">
+                        <button class="minus" v-on:click="DecCount(item)">-</button>
+                        <div>{{item.count}}</div>
+                        <button class="plus" v-on:click="item.count += 1">+</button>
+                </div>
             </td>
         </tr>
         </table>
-        <button v-on:click="Order">Заказать</button>
+        <button v-on:click="Order" class="Order">Заказать</button>
     </div>
-
 
     <script src="~/lib/jquery/dist/jquery.js"></script>
     <script src="https://unpkg.com/vue@next"></script>
