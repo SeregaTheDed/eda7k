@@ -14,6 +14,7 @@ namespace eda7k.Controllers
         {
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> Login(string login)
         {
@@ -31,21 +32,6 @@ namespace eda7k.Controllers
             }
             return View();
         }
-        /*
-        $.ajax({
-            method: "POST",
-            url: "/account/login",
-            data: { login : "i.ivanov"},
-            success: function (data) {
-                $("#textbox").text($("#textbox").text() + " " +data);
-                },
-            error: function (er) {
-                console.log(er);
-                console.log(123);
-                }
-            });
-         */
-
 
         [HttpPost]
         public async Task<IActionResult> Register(string login)
@@ -86,62 +72,7 @@ namespace eda7k.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login", "Account");
         }
-        /*
-        $.ajax({
-            method: "POST",
-            url: "/account/logout",
-            success: function (data) {
-                $("#textbox").text($("#textbox").text() + " " +data);
-                },
-            error: function (er) {
-                console.log(er);
-                console.log(123);
-                }
-            });
-         */
+        
     }
 
-
-
-
-
-
-    /*public class AccountController : Controller
-    {
-        public IActionResult Auth()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult Login([FromBody]string login)
-        {
-            if (login == "admin")
-                return Redirect("~/home");
-            return new NotFoundObjectResult("123");
-            
-        }
-        *//*
-$.ajax({
-    type: "POST",
-    contentType: "application/json",
-    url: "/account/login",
-    data: JSON.stringify("admin"),
-    }
-);
-         *//*
-        [HttpPost]
-        public IActionResult Logout()
-        {
-            return Redirect("~/account/auth");
-        }
-        *//*
- $.ajax({
-     type: "POST",
-     contentType: "application/json",
-     url: "/account/logout",
-     }
- );
-         *//*
-    }*/
 }

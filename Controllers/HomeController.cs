@@ -25,6 +25,7 @@ namespace eda7k.Controllers
                 _user = db.getUserByLogin(httpContextAccessor.HttpContext.User.Identities.First().Name);
             }
         }
+
         public IActionResult Index()
         {
             return View();
@@ -100,7 +101,6 @@ namespace eda7k.Controllers
                 return new OkObjectResult(orders);
             }
         }
-
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

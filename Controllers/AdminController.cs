@@ -106,6 +106,8 @@ namespace eda7k.Controllers
         [HttpPost]
         public async Task<IActionResult> GetCategories()
         {
+            if (_user.is_admin == false)
+                return NotFound();
             using (DBConnection db = new())
             {
                 return new OkObjectResult(await db.Categories.ToArrayAsync());
@@ -116,6 +118,8 @@ namespace eda7k.Controllers
         [HttpPost]
         public async Task<IActionResult> GetProducts()
         {
+            if (_user.is_admin == false)
+                return NotFound();
             using (DBConnection db = new())
             {
                 return new OkObjectResult(await db.Products.ToArrayAsync());
@@ -130,6 +134,8 @@ namespace eda7k.Controllers
         [HttpPost]
         public async Task<IActionResult> AddNewProducts([FromBody] Product[] products)
         {
+            if (_user.is_admin == false)
+                return NotFound();
             using (DBConnection db = new())
             {
                 await db.Products.AddRangeAsync(products);
@@ -137,6 +143,7 @@ namespace eda7k.Controllers
                 return new OkObjectResult(db.Products.ToArray());
             }
         }
+
         [HttpPost]
         public async Task<IActionResult> GetConfig()
         {
@@ -147,6 +154,7 @@ namespace eda7k.Controllers
                 return new OkObjectResult(await db.GetConfigAsync());
             }
         }
+
         [HttpPost]
         public async Task<IActionResult> SetConfig([FromBody]Config newConfig)
         {
@@ -159,14 +167,18 @@ namespace eda7k.Controllers
                 currentConfig.next_order_day = newConfig.next_order_day;
                 await db.SaveChangesAsync();
             }
-            /*using (DBConnection db = new())
-            {
-                var currentConfig = await db.Config.FirstOrDefaultAsync();
-                currentConfig.last_time_to_do_order = newConfig.last_time_to_do_order;
-                currentConfig.next_order_day = newConfig.next_order_day;
-                await db.SaveChangesAsync();
-            }*/
             return Ok();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetStatuses([FromBody] Config newConfig)
+        {
+            if (_user.is_admin == false)
+                return NotFound();
+            using (DBConnection db = new())
+            {
+                return new OkObjectResult(await db.Statuses.ToArrayAsync());
+            }
         }
     }
 
