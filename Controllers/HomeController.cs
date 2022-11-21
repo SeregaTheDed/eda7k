@@ -14,9 +14,15 @@ namespace eda7k.Controllers
         public int ProductId { get; set; }
         public int Count { get; set; }
     }
+    public class ProductWithCount
+    {
+        public Product Product { get; set; }
+        public int Count { get; set; }
+    }
     [Authorize]
     public class HomeController : Controller
     {
+        
         private User _user;
         public HomeController(IHttpContextAccessor httpContextAccessor)
         {
@@ -76,27 +82,32 @@ namespace eda7k.Controllers
         [HttpPost]
         public async Task<IActionResult> GetAllOrders()
         {
-            //(Product, int)[]
             using (DBConnection db = new())
             {
                 // TODO: optimize queries
-                var allOrderIds = db.Orders
+                var allOrderIds = await db.Orders
                     .Where(x => x.user_id == _user.id)
-                    .Select(x => x.id);
-                List<List<(Product, int)>> orders = new List<List<(Product, int)>>();
+                    .Select(x => x.id)
+                    .ToArrayAsync();
+                List<List<ProductWithCount >> orders = new List<List<ProductWithCount>>();
 
                 foreach (var OrderId in allOrderIds)
                 {
-                    List<(Product, int)> currentOrder = new List<(Product, int)>();
-                    foreach (var item in db.Rel_orders_products
-                        .Where(x => x.order_id == OrderId))
+                    List<ProductWithCount> currentOrder = new List<ProductWithCount>();
+                    foreach (var item in await db.Rel_orders_products
+                        .Where(x => x.order_id == OrderId).ToArrayAsync())
                     {
                         var currentProduct = await db.Products.FirstOrDefaultAsync(x => x.id == item.product_id);
                         if (currentProduct == null)
                             currentProduct = Product.GetEmptyProduct();
-                        currentOrder.Add((currentProduct, item.count));
+                        currentOrder.Add(new ProductWithCount
+                        {
+                            Product = currentProduct,
+                            Count = item.count
+                        });
                     }
-                    orders.Add(currentOrder);
+                    if (currentOrder.Count > 0)
+                        orders.Add(currentOrder);
                 }
                 return new OkObjectResult(orders);
             }
