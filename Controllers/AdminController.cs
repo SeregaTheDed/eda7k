@@ -188,32 +188,38 @@ namespace eda7k.Controllers
                 return NotFound();
             using (DBConnection db = new())
             {
-                var allOrderIds = await db.Orders
-                    .Select(x => x.id)
+                var allOrders = await db.Orders
                     .ToArrayAsync();
-                List<List<ProductWithCount>> orders = new List<List<ProductWithCount>>();
+                List<AdminOrder> orders = new List<AdminOrder>();
 
-                foreach (var OrderId in allOrderIds)
+                foreach (var Order in allOrders)
                 {
-                    List<ProductWithCount> currentOrder = new List<ProductWithCount>();
+                    int OrderId = Order.id.Value;
+                    List<ProductWithCount> currentOrderProducts = new List<ProductWithCount>();
                     foreach (var item in await db.Rel_orders_products
                         .Where(x => x.order_id == OrderId).ToArrayAsync())
                     {
                         var currentProduct = await db.Products.FirstOrDefaultAsync(x => x.id == item.product_id);
                         if (currentProduct == null)
                             currentProduct = Product.GetEmptyProduct();
-                        currentOrder.Add(new ProductWithCount
+                        currentOrderProducts.Add(new ProductWithCount
                         {
                             Product = currentProduct,
                             Count = item.count
                         });
                     }
-                    if (currentOrder.Count > 0)
-                        orders.Add(currentOrder);
+                    if (currentOrderProducts.Count > 0)
+                    {
+                        orders.Add(new AdminOrder()
+                        {
+                            Products = currentOrderProducts,
+                            CustomerName = Order.customer_name,
+                            OrderId = OrderId,
+                            StatusId = Order.status_id,
+                        });
+                    }
                 }
                 return new OkObjectResult(orders);
-
-                return new OkObjectResult(null);
             }
         }
 
@@ -228,19 +234,15 @@ namespace eda7k.Controllers
                 return Ok();
             }
         }
+
         
     }
     class AdminOrder
     {
-        public List<AdminOrderProduct> Products { get; set; } = new List<AdminOrderProduct>();
+        public List<ProductWithCount> Products { get; set; } = new List<ProductWithCount>();
         public string CustomerName { get; set; }
         public int StatusId { get; set; }
         public int OrderId { get; set; }
-    }
-    class AdminOrderProduct
-    {
-        public Product Product { get; set; }
-        public int count { get; set; }
     }
 
 }
