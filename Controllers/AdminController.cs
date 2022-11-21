@@ -235,7 +235,29 @@ namespace eda7k.Controllers
             }
         }
 
-        
+        [HttpPost]
+        public async Task<IActionResult> AddNewPositions([FromBody]Position[] newPositions)
+        {
+            using(DBConnection db = new())
+            {
+                foreach (var position in newPositions)
+                {
+                    position.date = DateTime.Today;
+                    db.Positions.Add(position);
+                }
+                await db.SaveChangesAsync();
+                return Ok();
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetAllPositions()
+        {
+            using (DBConnection db = new())
+            {
+                return new OkObjectResult(await db.Positions.ToArrayAsync());
+            }
+        }
     }
     class AdminOrder
     {
