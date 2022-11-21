@@ -188,21 +188,44 @@ namespace eda7k.Controllers
                 return NotFound();
             using (DBConnection db = new())
             {
-                List<AdminOrder> ResultOrders = new List<AdminOrder>();
-                var OrdersFromDB = await db.Orders.ToArrayAsync();
-                foreach (var order in OrdersFromDB)
+                var allOrderIds = await db.Orders
+                    .Select(x => x.id)
+                    .ToArrayAsync();
+                List<List<ProductWithCount>> orders = new List<List<ProductWithCount>>();
+
+                foreach (var OrderId in allOrderIds)
                 {
-                    Product productsForCurrentOrder = await db.Products.FirstOrDefaultAsync();
-                    AdminOrder adminOrder = new AdminOrder()
+                    List<ProductWithCount> currentOrder = new List<ProductWithCount>();
+                    foreach (var item in await db.Rel_orders_products
+                        .Where(x => x.order_id == OrderId).ToArrayAsync())
                     {
-                        OrderId = order.id.Value,
-                        StatusId = order.status_id,
-                        CustomerName = order.customer_name,
-                    };
+                        var currentProduct = await db.Products.FirstOrDefaultAsync(x => x.id == item.product_id);
+                        if (currentProduct == null)
+                            currentProduct = Product.GetEmptyProduct();
+                        currentOrder.Add(new ProductWithCount
+                        {
+                            Product = currentProduct,
+                            Count = item.count
+                        });
+                    }
+                    if (currentOrder.Count > 0)
+                        orders.Add(currentOrder);
                 }
-                
-                
+                return new OkObjectResult(orders);
+
                 return new OkObjectResult(null);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeOrderStatusById(int id, int newStatusId)
+        {
+            using (DBConnection db = new())
+            {
+                var needOrder = await db.Orders.FirstAsync(x => x.id == id);
+                needOrder.status_id = newStatusId;
+                await db.SaveChangesAsync();
+                return Ok();
             }
         }
         
