@@ -171,7 +171,7 @@ namespace eda7k.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetStatuses([FromBody] Config newConfig)
+        public async Task<IActionResult> GetStatuses()
         {
             if (_user.is_admin == false)
                 return NotFound();
@@ -180,6 +180,44 @@ namespace eda7k.Controllers
                 return new OkObjectResult(await db.Statuses.ToArrayAsync());
             }
         }
+
+        [HttpPost]
+        public async Task<IActionResult> GetAllOrders()
+        {
+            if (_user.is_admin == false)
+                return NotFound();
+            using (DBConnection db = new())
+            {
+                List<AdminOrder> ResultOrders = new List<AdminOrder>();
+                var OrdersFromDB = await db.Orders.ToArrayAsync();
+                foreach (var order in OrdersFromDB)
+                {
+                    Product productsForCurrentOrder = await db.Products.FirstOrDefaultAsync();
+                    AdminOrder adminOrder = new AdminOrder()
+                    {
+                        OrderId = order.id.Value,
+                        StatusId = order.status_id,
+                        CustomerName = order.customer_name,
+                    };
+                }
+                
+                
+                return new OkObjectResult(null);
+            }
+        }
+        
+    }
+    class AdminOrder
+    {
+        public List<AdminOrderProduct> Products { get; set; } = new List<AdminOrderProduct>();
+        public string CustomerName { get; set; }
+        public int StatusId { get; set; }
+        public int OrderId { get; set; }
+    }
+    class AdminOrderProduct
+    {
+        public Product Product { get; set; }
+        public int count { get; set; }
     }
 
 }

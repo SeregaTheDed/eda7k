@@ -54,6 +54,8 @@ namespace eda7k.Controllers
         {
             using (DBConnection db = new())
             {
+                if (productIdsAndCounts.Length == 0)
+                    return BadRequest();
                 var config = await db.GetConfigAsync();
                 Order currentOrder = new Order
                 {

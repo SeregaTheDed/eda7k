@@ -1,11 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace eda7k.Models
 {
     public class Status
     {
-        public int id { get; set; }
-        public string name { get; set; }
+        [Key]
+        public int id { get; private set; }
+        public string name { get; private set; }
     }
 
     public partial class DBConnection : DbContext
