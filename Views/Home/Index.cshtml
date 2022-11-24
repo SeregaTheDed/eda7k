@@ -43,28 +43,42 @@
         </table>
         <button v-on:click="Order" class="Order">Заказать</button>
         <button v-on:click="logout" class="button" id="button_logout">Выйти</button>
+
+        <div id="history">
+        <div v-for="items in history" style="heigth:200px;width:90px;display:inline-block;border:1px solid black">
+            Заказ
+            <div v-for="item in items">
+                 {{item.product.price}} {{item.count}} {{item.product.name}} 
+            </div>
+            <br>
+        </div>
+        </div>
     </div>
     
+
 
     <script src="~/lib/jquery/dist/jquery.js"></script>
     <script src="https://unpkg.com/vue@next"></script>
     <script src="~/js/air-datepicker.js"></script>
     <script>
-        async function GetProductsForOrder() {
-        return await fetch("home/GetProductsForOrder",{
-            method: 'POST'
-        })
-        }
-
         async function GetAllOrders() {
             return await fetch("home/GetAllOrders", {
                 method: 'POST'
             })
         }
 
+
+
+        async function GetProductsForOrder() {
+        return await fetch("home/GetProductsForOrder",{
+            method: 'POST'
+        })
+        }
+
         const Table = {
         data() {            
             return {
+                history: [],
                 data: []
             }
         },
@@ -76,8 +90,10 @@
             for(let i = 0; i < data.length; i++){
             data[i].count = 0;   
             }
-                const response1 = await GetAllOrders();
-                console.log(await response1.json());
+            const response1 = await GetAllOrders();
+            let data1 = await response1.json();
+            console.log(data1);
+            this.history = data1;
         },
         methods:{
             DecCount: function(item){
@@ -129,5 +145,7 @@
                 console.log("error : " + JSON.stringify(data));
             },
         });
+    </script>
+    <script>
     </script>
 </div>
