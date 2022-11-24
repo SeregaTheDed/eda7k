@@ -54,6 +54,18 @@
         <input placeholder="дата на которую заказывают" type="text" id="airdatepicker" class="form-control" />
         <input placeholder="дата и время до которого можно будет сделать заказ" type="text" id="airtimepicker" class="form-control" />
     </div>
+
+    <div id="history">
+        <div v-for="items in history" style="heigth:200px;width:90px;display:inline-block;border:1px solid black">
+            Заказ {{items.orderId}} 
+            {{items.customerName}}
+            <div v-for="item in items.products">
+                 {{item.product.price}} {{item.count}} {{item.product.name}} 
+            </div>
+            Статус {{items.statusId}}
+            <br>
+        </div>
+    </div>
 </div>
 
 
@@ -92,10 +104,16 @@
         }
         });
     }
+    async function GetAllOrders() {
+        return await fetch("admin/GetAllOrders",{
+            method: 'POST'
+        })
+    }
 
     const Table = {
         data() {            
             return {
+                history: [],
                 categories: [],
                 data: []
             }
@@ -108,6 +126,11 @@
             const res1 = await GetCategories();
             let cat = await res1.json();
             this.categories = cat;
+            
+            const res2 = await GetAllOrders();
+            let history = await res2.json();
+            this.history = history;
+            console.log(history);
         },
         methods:{
             logout: function(){
