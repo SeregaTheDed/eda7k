@@ -115,6 +115,28 @@ namespace eda7k.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> GetUserName()
+        {
+            using (DBConnection db = new())
+            {
+                return new OkObjectResult(_user.last_name);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SetUserName([FromBody] string name)
+        {
+            if (name.Length <= 3)
+                return BadRequest();
+            using (DBConnection db = new())
+            {
+                db.Users.First(x => _user.id == x.id).last_name = name;
+                await db.SaveChangesAsync();
+                return Ok();
+            }
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
