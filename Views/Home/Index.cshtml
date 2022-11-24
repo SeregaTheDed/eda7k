@@ -42,7 +42,9 @@
         </tr>
         </table>
         <button v-on:click="Order" class="Order">Заказать</button>
+        <button v-on:click="logout" class="button" id="button_logout">Выйти</button>
     </div>
+    
 
     <script src="~/lib/jquery/dist/jquery.js"></script>
     <script src="https://unpkg.com/vue@next"></script>
@@ -54,7 +56,11 @@
         })
         }
 
-
+        async function GetAllOrders() {
+            return await fetch("home/GetAllOrders", {
+                method: 'POST'
+            })
+        }
 
         const Table = {
         data() {            
@@ -68,15 +74,24 @@
             let data = await response.json();
             this.data = data;
             for(let i = 0; i < data.length; i++){
-            data[i].count = 0;
-        }
+            data[i].count = 0;   
+            }
+                const response1 = await GetAllOrders();
+                console.log(await response1.json());
         },
         methods:{
             DecCount: function(item){
                 if (item.count > 0)
                     item.count--
             },
-            Order: async function(){
+                logout: function () {
+                    fetch("account/logout", {
+                        method: 'POST'
+                    }).then(() => {
+                        location.reload();
+                    })
+                },
+                    Order: async function(){
                 let orders = new Array();
                 for(let i = 0; i < this.data.length; i++){
                     orders.push({ProductId: this.data[i].id, Count: this.data[i].count})
