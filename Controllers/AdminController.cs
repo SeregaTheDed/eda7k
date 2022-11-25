@@ -191,15 +191,16 @@ namespace eda7k.Controllers
                 var allOrders = await db.Orders
                     .ToArrayAsync();
                 List<AdminOrder> orders = new List<AdminOrder>();
-
+                var Products = await db.Products.ToArrayAsync();
+                var Rel_orders_products = await db.Rel_orders_products.ToArrayAsync();
                 foreach (var Order in allOrders)
                 {
                     int OrderId = Order.id.Value;
                     List<ProductWithCount> currentOrderProducts = new List<ProductWithCount>();
-                    foreach (var item in await db.Rel_orders_products
-                        .Where(x => x.order_id == OrderId).ToArrayAsync())
+                    foreach (var item in Rel_orders_products
+                        .Where(x => x.order_id == OrderId).ToArray())
                     {
-                        var currentProduct = await db.Products.FirstOrDefaultAsync(x => x.id == item.product_id);
+                        var currentProduct = Products.FirstOrDefault(x => x.id == item.product_id);
                         if (currentProduct == null)
                             currentProduct = Product.GetEmptyProduct();
                         currentOrderProducts.Add(new ProductWithCount
