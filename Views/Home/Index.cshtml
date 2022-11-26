@@ -45,7 +45,7 @@
         <button v-on:click="logout" class="button" id="button_logout">Выйти</button>
 
         <div id="history">
-        <div v-for="items in history" style="heigth:200px;width:90px;display:inline-block;border:1px solid black">
+        <div v-for="items in history" style="width:90px;display:inline-block;border:1px solid black">
             Заказ
             <div v-for="item in items">
                  {{item.product.price}} {{item.count}} {{item.product.name}} 

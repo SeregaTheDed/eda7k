@@ -32,13 +32,13 @@ body {
 
 .minus {
     height:30px;
-    width:25px;
+    width:30px;
     
 }
 
 .plus {
     height: 30px;
-    width: 25px;
+    width: 30px;
     
 }
 
@@ -52,8 +52,7 @@ td, th {
 }
 
 #button_logout {
-    margin-top: 30px;
     position: absolute;
     top: 10px;
-    right: 215px;
+    right: 10px;
 }
