@@ -51,12 +51,14 @@
     <button v-on:click="logout" class="button" id="button_logout">Выйти</button>
 
     <div>
-        <input placeholder="дата на которую заказывают" type="text" id="airdatepicker" class="form-control" />
-        <input placeholder="дата и время до которого можно будет сделать заказ" type="text" id="airtimepicker" class="form-control" />
+        дата на которую заказывают
+        <input type="text" id="airdatepicker" class="form-control" style="width: 256px;"/>
+        дата и время до которого можно будет сделать заказ
+        <input type="text" id="airtimepicker" class="form-control" style="width: 256px;"/>
     </div>
 
     <div id="history">
-        <div v-for="items in history" style="heigth:200px;width:90px;display:inline-block;border:1px solid black">
+        <div v-for="items in history" style="width:90px;display:inline-block;border:1px solid black">
             Заказ {{items.orderId}} 
             {{items.customerName}}
             <div v-for="item in items.products">

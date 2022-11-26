@@ -36,7 +36,7 @@
                    data: { login : $('#input_login').val()},
                    success: function (data) {
                         $("#textbox").text($("#textbox").text() + " " +data);
-                        window.location.replace("../home/");
+                        window.location.replace("../home");
                         },
                    error: function (er) {
                         console.log(er);
