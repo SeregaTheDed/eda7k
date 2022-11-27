@@ -141,22 +141,27 @@
                         location.reload();
                     })
                 },
-                    Order: async function(){
-                let orders = new Array();
-                for(let i = 0; i < this.data.length; i++){
-                    orders.push({ProductId: this.data[i].id, Count: this.data[i].count})
-                }
-                $.ajax({
-                dataType: 'json',
-                contentType: "application/json",
-                method: "post",
-                url: "/home/DoOrder",
-                data: JSON.stringify(orders),
-                success: function (data) {
-                },
-                error: function (er) {
-                }
-                });                  
+             Order: async function(){
+                 if(!this.name){
+                     console.log("Введите имя");
+                 }
+                 else{
+                        let orders = new Array();
+                        for (let i = 0; i < this.data.length; i++) {
+                            orders.push({ ProductId: this.data[i].id, Count: this.data[i].count })
+                        }
+                        $.ajax({
+                            dataType: 'json',
+                            contentType: "application/json",
+                            method: "post",
+                            url: "/home/DoOrder",
+                            data: JSON.stringify(orders),
+                            success: function (data) {
+                            },
+                            error: function (er) {
+                            }
+                        });
+                    }           
             }
         }
     }
