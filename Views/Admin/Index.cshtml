@@ -65,7 +65,11 @@
                  {{item.product.price}} {{item.count}} {{item.product.name}} 
             </div>
             Статус 
-            <input type="number" v-model="items.statusId" v-on:change="ChangeOrderStatusById(items.orderId, items.statusId)" style="width:50px;"/>
+            <select v-model="items.statusId" v-on:change="ChangeOrderStatusById(items.orderId, items.statusId)">
+                <option v-for="option in statuses" :value="option.id">
+                    {{ option.name }}
+                </option>
+            </select>
             <br>
         </div>
     </div>
@@ -113,12 +117,19 @@
         })
     }
 
+    async function GetStatuses() {
+        return await fetch("/admin/GetStatuses", {
+            method: 'POST'
+        })
+    }
+
     const Table = {
         data() {            
             return {
                 history: [],
                 categories: [],
-                data: []
+                data: [],
+                statuses:[],
             }
         },
         async mounted() {
@@ -133,6 +144,10 @@
             const res2 = await GetAllOrders();
             let history = await res2.json();
             this.history = history;
+
+            const res3 = await GetStatuses();
+            let statuses = await res3.json();
+            this.statuses = statuses;
         },
         methods:{
             logout: function(){
