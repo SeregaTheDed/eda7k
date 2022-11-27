@@ -64,7 +64,8 @@
             <div v-for="item in items.products">
                  {{item.product.price}} {{item.count}} {{item.product.name}} 
             </div>
-            Статус {{items.statusId}}
+            Статус 
+            <input type="number" v-model="items.statusId" v-on:change="ChangeOrderStatusById(items.orderId, items.statusId)" style="width:50px;"/>
             <br>
         </div>
     </div>
@@ -132,7 +133,6 @@
             const res2 = await GetAllOrders();
             let history = await res2.json();
             this.history = history;
-            console.log(history);
         },
         methods:{
             logout: function(){
@@ -176,6 +176,22 @@
                         error: function (er) {                    
                         }
                 })
+            },
+            ChangeOrderStatusById: async function(id, newId){
+                $.ajax({
+                method: "post",
+                url: "/admin/ChangeOrderStatusById",
+                data: {
+                    "id":id,
+                    "newId":newId
+                },
+                success: function (data) {
+                },
+                error: function (er) {
+                    console.log(id);
+                    console.log(newId);
+                }
+                });
             }
         }
     }
