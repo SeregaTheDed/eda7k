@@ -41,8 +41,14 @@
             </td>
         </tr>
         </table>
+
         <button v-on:click="Order" class="Order">Заказать</button>
         <button v-on:click="logout" class="button" id="button_logout">Выйти</button>
+
+        <div style="position:absolute;top:10px;right:100px;">
+            Имя
+            <input v-model="name" onchange="SetUserName(this.value)"/>
+        </div>
 
         <div id="history">
         <div v-for="items in history" style="width:90px;display:inline-block;border:1px solid black">
@@ -66,18 +72,43 @@
                 method: 'POST'
             })
         }
-
-
-
         async function GetProductsForOrder() {
-        return await fetch("home/GetProductsForOrder",{
-            method: 'POST'
-        })
+            return await fetch("home/GetProductsForOrder",{
+                method: 'POST'
+            })
+        }
+        async function GetUserName() {
+            return await fetch("home/GetUserName",{
+                method: 'POST'
+            })
+        }
+        async function SetUserName(value) {
+            return await fetch("home/SetUserName",{
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify(value)
+            })
+
+            //$.ajax({
+            //dataType: 'json',
+            //contentType: "application/json",
+            //type: "POST",
+            //url: "/home/SetUserName",
+            //data: {"name": value},
+            //success: function (data) {                
+            //},
+            //error: function (er) {
+            //    console.log(value);
+            //}
+            //});
         }
 
         const Table = {
         data() {            
             return {
+                name: '',
                 history: [],
                 data: []
             }
@@ -90,10 +121,13 @@
             for(let i = 0; i < data.length; i++){
             data[i].count = 0;   
             }
+
             const response1 = await GetAllOrders();
             let data1 = await response1.json();
-            console.log(data1);
             this.history = data1;
+
+            const response2 = await GetUserName();
+            this.name = await response2.text();
         },
         methods:{
             DecCount: function(item){
