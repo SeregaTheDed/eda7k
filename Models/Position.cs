@@ -12,6 +12,7 @@ namespace eda7k.Models
         public string? customer_name { get; set; } 
         public bool with_sauce { get; set; } 
         public int? user_id { get; set; }
+        public int price { get; set; }
     }
     public partial class DBConnection : DbContext
     {
