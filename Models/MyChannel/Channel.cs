@@ -20,7 +20,6 @@
 
             public void Dispose()
             {
-                Console.WriteLine("Dispose!");
                 _semaphore.Release();
             }
         }
