@@ -35,6 +35,7 @@ namespace eda7k.Controllers
             {
                 db.Positions.Add(newPosition);
                 await db.SaveChangesAsync();
+                //Check here firstly if problem
                 await MyChannel.WriteAsync(new KeyValuePair<Operations, int>(Operations.Add, newPosition.id.Value));
             }
             return new OkResult();
