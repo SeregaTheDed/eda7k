@@ -29,6 +29,13 @@ namespace eda7k.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> AskActionLongPool([FromBody] int id)
+        {
+            var result = await MyChannel.GetSheduleTask();//Ожидание пока кто-то что-то не купит
+            return Ok(result);
+        }
+
+        [HttpPost]
         public async Task<IActionResult> BuyPositionById([FromBody] int id)
         {
             using (var db = new DBConnection())
