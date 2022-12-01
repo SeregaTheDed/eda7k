@@ -58,7 +58,7 @@ namespace eda7k.Controllers
             }
         }
 
-        private static PositionView GetPositionViewFromPosition(Position position, Dictionary<int?, Product> ProductsById)
+        private static PositionView GetPositionViewFromPosition(Position position, Dictionary<int, Product> ProductsById)
         {
             StringBuilder productNameSB = new StringBuilder();
 
@@ -68,9 +68,9 @@ namespace eda7k.Controllers
             if (position.product_id_second.HasValue)
             {
                 Product product2;
-                if (ProductsById.ContainsKey(position.product_id_second))
+                if (ProductsById.ContainsKey(position.product_id_second.Value))
                 {
-                    product2 = ProductsById[position.product_id_second];
+                    product2 = ProductsById[position.product_id_second.Value];
                 }
                 else
                 {
