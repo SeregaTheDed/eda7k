@@ -29,6 +29,18 @@ namespace eda7k.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> GetPositionById([FromBody] int id)
+        {
+            using (var db = new DBConnection())
+            {
+                var findingPosition = await db.Positions.FirstOrDefaultAsync(x => x.id == id);
+                if (findingPosition == null)
+                    return NotFound();
+                return new OkObjectResult(findingPosition);
+            }
+        }
+
+        [HttpPost]
         public async Task<IActionResult> AddNewPosition([FromBody] Position newPosition)
         {
             using (var db = new DBConnection())
