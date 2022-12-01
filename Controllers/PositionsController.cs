@@ -36,44 +36,44 @@ namespace eda7k.Controllers
 
                 var PositionViews = Positions.Select(x =>
                 {
-                    return GetProductView(x, ProductsById);
+                    return GetPositionViewFromPosition(x, ProductsById);
                 });
 
                 return new OkObjectResult(Positions);
             }
         }
 
-        private static PositionView GetProductView(Position x, Dictionary<int?, Product> ProductsById)
+        private static PositionView GetPositionViewFromPosition(Position position, Dictionary<int?, Product> ProductsById)
         {
             StringBuilder productNameSB = new StringBuilder();
 
-            Product product1 = ProductsById[x.product_id_first];
+            Product product1 = ProductsById[position.product_id_first];
             productNameSB.Append(product1.name);
 
-            if (x.product_id_second.HasValue)
+            if (position.product_id_second.HasValue)
             {
                 Product product2;
-                if (ProductsById.ContainsKey(x.product_id_second))
+                if (ProductsById.ContainsKey(position.product_id_second))
                 {
-                    product2 = ProductsById[x.product_id_second];
+                    product2 = ProductsById[position.product_id_second];
                 }
                 else
                 {
                     product2 = Product.GetEmptyProduct();
                 }
-                productNameSB.Append(" + " + product1.name);
+                productNameSB.Append(" + " + product2.name);
             }
 
-            if (x.with_sauce)
+            if (position.with_sauce)
             {
                 productNameSB.Append(" + соус");
             }
 
             return new PositionView()
             {
-                Id = x.id.Value,
+                Id = position.id.Value,
                 Name = productNameSB.ToString(),
-                Price = x.price
+                Price = position.price
 
             };
         }
