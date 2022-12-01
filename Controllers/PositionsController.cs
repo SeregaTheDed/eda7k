@@ -29,6 +29,32 @@ namespace eda7k.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> BuyPositionById([FromBody] int id)
+        {
+            using (var db = new DBConnection())
+            {
+                var buyingPosition = await db.Positions.FirstOrDefaultAsync(x => x.id == id);
+                if (buyingPosition == null) 
+                {
+                    return BadRequest();
+                }
+                else
+                {
+                    buyingPosition.user_id = _user.id;
+                    buyingPosition.date = DateTime.Now;
+                    buyingPosition.customer_name = _user.last_name;
+                    await db.SaveChangesAsync();
+                    await MyChannel.WriteAsync(new KeyValuePair<Operations, int>
+                       (
+                       Operations.Delete,
+                       id
+                       ));
+                    return Ok();
+                }
+            }
+        }
+
+        [HttpPost]
         public async Task<IActionResult> GetPositionById([FromBody] int id)
         {
             using (var db = new DBConnection())
