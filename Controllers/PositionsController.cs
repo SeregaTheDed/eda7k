@@ -1,4 +1,5 @@
 ﻿using eda7k.Models;
+using eda7k.Models.MyChannel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -27,6 +28,19 @@ namespace eda7k.Controllers
             return View();
         }
 
+        [HttpPost]
+        public async Task<IActionResult> AddNewPosition([FromBody] Position newPosition)
+        {
+            using (var db = new DBConnection())
+            {
+                db.Positions.Add(newPosition);
+                await db.SaveChangesAsync();
+                await MyChannel.WriteAsync(new KeyValuePair<Operations, int>(Operations.Add, newPosition.id.Value));
+            }
+            return new OkResult();
+        }
+
+        [HttpPost]
         public async Task<IActionResult> GetAllPositions()
         {
             using (var db = new DBConnection())
