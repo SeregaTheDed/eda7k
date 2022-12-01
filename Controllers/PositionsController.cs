@@ -49,10 +49,8 @@ namespace eda7k.Controllers
                 var Positions = await db.Positions.ToArrayAsync();
                 var ProductsById = (await db.Products.ToArrayAsync()).ToDictionary(x => x.id.Value);
 
-                var PositionViews = Positions.Select(x =>
-                {
-                    return GetPositionViewFromPosition(x, ProductsById);
-                });
+                var PositionViews = Positions
+                    .Select(x =>  GetPositionViewFromPosition(x, ProductsById));
 
                 return new OkObjectResult(Positions);
             }
