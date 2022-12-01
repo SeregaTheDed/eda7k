@@ -74,6 +74,20 @@ namespace eda7k.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> ChangePositionStatusById(int id, int newStatusId)
+        {
+            if (_user.is_admin == false)
+                return NotFound();
+            using (DBConnection db = new())
+            {
+                var needPosition = await db.Positions.FirstAsync(x => x.id == id);
+                needPosition.status_id = newStatusId;
+                await db.SaveChangesAsync();
+                return Ok();
+            }
+        }
+
+        [HttpPost]
         public async Task<IActionResult> AddNewPosition([FromBody] Position newPosition)
         {
             using (var db = new DBConnection())
