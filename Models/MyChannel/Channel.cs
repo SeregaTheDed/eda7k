@@ -29,7 +29,7 @@
         private static SemaphoreSlim _semaphoreReadWrite = new SemaphoreSlim(1);
         private static Task<KeyValuePair<Operations, int>> _sheduleTask = SheduleTask();
         private static KeyValuePair<Operations, int> _operationAndId;
-        public static async void WriteAsync(KeyValuePair<Operations, int> operationAndId)
+        public static async Task WriteAsync(KeyValuePair<Operations, int> operationAndId)
         {
             await _semaphoreReadWrite.WaitAsync();
             _operationAndId = operationAndId;
