@@ -143,7 +143,7 @@
                 },
              Order: async function(){
                  if(!this.name){
-                     console.log("Введите имя");
+                    alert("Введите имя");
                  }
                  else{
                         let orders = new Array();
@@ -156,12 +156,15 @@
                             method: "post",
                             url: "/home/DoOrder",
                             data: JSON.stringify(orders),
-                            success: function (data) {
+                            success: function (data) {                                
+                                alert("Успешно! Заказ принят.");                                
                             },
                             error: function (er) {
                             }
                         });
+                        window.location.reload();                        
                     }           
+                    return false;
             }
         }
     }

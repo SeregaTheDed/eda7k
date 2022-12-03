@@ -178,7 +178,7 @@
                 this.data.push(emptyProduct)
             },
             SaveChanges: async function(){   
-                console.log(this.data)                
+                console.log(this.data);           
                 $.ajax({
                         dataType: 'json',
                         contentType: "application/json",
@@ -186,11 +186,13 @@
                         url: "/admin/UpdateProductTheBest",
                         data: JSON.stringify(this.data),
                         success: function (data) {  
-                            alert("Сохранено")
+                            alert("Сохранено");
                         },
                         error: function (er) {                    
                         }
-                })
+                });
+                window.location.reload(); 
+                return false;
             },
             ChangeOrderStatusById: async function(id, newId){
                 $.ajax({
