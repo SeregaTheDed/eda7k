@@ -24,13 +24,13 @@
             <tr v-for="item in data">
             <td>
                 <input type="hidden" v-model="item.id" />
-                <input v-model="item.name" />
+                <input v-model="item.name" readonly/>
             </td>
             <td>
-                <input v-model="item.price" />
+                <input v-model="item.price" readonly/>
             </td>
             <td>
-                <input/>
+                <input readonly/>
             </td>
             <td>
                 <div class="plus-minus">
@@ -167,9 +167,6 @@
     }
 
     Vue.createApp(Table).mount('#table')
-
-
-
         var group = { 'listofusers': listofusers };
         console.log(group);
         $.ajax({
@@ -177,11 +174,9 @@
             type: "POST",
             url: "/Home/GetMassiv",
             data: group,
-            success: function (data) {
-                console.log("output : " + JSON.stringify(data));
+            success: function (data) {                
             },
             error: function (data) {
-                console.log("error : " + JSON.stringify(data));
             },
         });
     </script>
