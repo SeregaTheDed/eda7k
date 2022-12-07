@@ -34,7 +34,7 @@ namespace eda7k.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return View(_user);
         }
 
         [HttpPost]

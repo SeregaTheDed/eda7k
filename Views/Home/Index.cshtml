@@ -2,9 +2,13 @@
     ViewData["Title"] = "Home Page";
 }
 
+@model eda7k.Models.User
 <link rel="stylesheet" href="~/css/Table2.css">
 
-
+@if (Model.is_admin)
+{
+    <button onclick='window.location.replace("admin")'>Админка</button>
+}
 
 <div class="text-center">
    
