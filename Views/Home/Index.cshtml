@@ -90,19 +90,6 @@
                 },
                 body: JSON.stringify(value)
             })
-
-            //$.ajax({
-            //dataType: 'json',
-            //contentType: "application/json",
-            //type: "POST",
-            //url: "/home/SetUserName",
-            //data: {"name": value},
-            //success: function (data) {                
-            //},
-            //error: function (er) {
-            //    console.log(value);
-            //}
-            //});
         }
 
         const Table = {
@@ -115,7 +102,6 @@
         },
         async mounted() {
             const response = await GetProductsForOrder();
-            console.log(response);
             let data = await response.json();
             this.data = data;
             for(let i = 0; i < data.length; i++){
@@ -151,37 +137,24 @@
                             orders.push({ ProductId: this.data[i].id, Count: this.data[i].count })
                         }
                         $.ajax({
-                            dataType: 'json',
                             contentType: "application/json",
                             method: "post",
                             url: "/home/DoOrder",
                             data: JSON.stringify(orders),
                             success: function (data) {                                
-                                alert("Успешно! Заказ принят.");                                
+                                alert("Успешно! Заказ принят.");  
+                                window.location.reload();   
                             },
-                            error: function (er) {
+                            error: function (er) {           
                             }
-                        });
-                        window.location.reload();                        
+                        });                       
                     }           
                     return false;
             }
         }
     }
 
-    Vue.createApp(Table).mount('#table')
-        var group = { 'listofusers': listofusers };
-        console.log(group);
-        $.ajax({
-            dataType: 'json',
-            type: "POST",
-            url: "/Home/GetMassiv",
-            data: group,
-            success: function (data) {                
-            },
-            error: function (data) {
-            },
-        });
+    Vue.createApp(Table).mount('#table');
     </script>
     <script>
     </script>

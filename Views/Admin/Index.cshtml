@@ -180,18 +180,17 @@
             SaveChanges: async function(){   
                 console.log(this.data);           
                 $.ajax({
-                        dataType: 'json',
                         contentType: "application/json",
                         type: "POST",
                         url: "/admin/UpdateProductTheBest",
                         data: JSON.stringify(this.data),
                         success: function (data) {  
                             alert("Сохранено");
+                            window.location.reload(); 
                         },
                         error: function (er) {                    
                         }
-                });
-                window.location.reload(); 
+                });                
                 return false;
             },
             ChangeOrderStatusById: async function(id, newId){
