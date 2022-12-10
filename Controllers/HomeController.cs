@@ -19,6 +19,11 @@ namespace eda7k.Controllers
         public Product Product { get; set; }
         public int Count { get; set; }
     }
+    public class ProductsAndDate
+    {
+        public List<ProductWithCount> Products { get; set; }
+        public DateTime Date { get; set; }
+    }
     [Authorize]
     public class HomeController : Controller
     {
@@ -87,30 +92,34 @@ namespace eda7k.Controllers
             using (DBConnection db = new())
             {
                 // TODO: optimize queries
-                var allOrderIds = await db.Orders
+                var allOrders = await db.Orders
                     .Where(x => x.user_id == _user.id)
-                    .Select(x => x.id)
                     .ToArrayAsync();
-                List<List<ProductWithCount >> orders = new List<List<ProductWithCount>>();
+                List<ProductsAndDate> orders = new List<ProductsAndDate>();
                 var Products = await db.Products.ToArrayAsync();
                 var Rel_orders_products = await db.Rel_orders_products.ToArrayAsync();
-                foreach (var OrderId in allOrderIds)
+                foreach (var CurrentOrder in allOrders)
                 {
-                    List<ProductWithCount> currentOrder = new List<ProductWithCount>();
+                    List<ProductWithCount> productsFromCurrentOrder = new List<ProductWithCount>();
                     foreach (var item in Rel_orders_products
-                        .Where(x => x.order_id == OrderId).ToArray())
+                        .Where(x => x.order_id == CurrentOrder.id).ToArray())
                     {
                         var currentProduct = Products.FirstOrDefault(x => x.id == item.product_id);
                         if (currentProduct == null)
                             currentProduct = Product.GetEmptyProduct();
-                        currentOrder.Add(new ProductWithCount
+                        productsFromCurrentOrder.Add(new ProductWithCount
                         {
                             Product = currentProduct,
                             Count = item.count
                         });
                     }
-                    if (currentOrder.Count > 0)
-                        orders.Add(currentOrder);
+                    if (productsFromCurrentOrder.Count > 0)
+                        orders.Add(new ProductsAndDate() 
+                        { 
+                            Products = productsFromCurrentOrder,
+                            Date = CurrentOrder.date
+                        }
+                        );
                 }
                 return new OkObjectResult(orders);
             }
