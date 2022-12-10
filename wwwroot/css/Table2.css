@@ -82,7 +82,7 @@ td, th {
     align-items: center;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 5px;
     border-right: 1px solid black;
 }
 
