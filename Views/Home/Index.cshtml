@@ -34,7 +34,7 @@
                     <input v-model="item.price" readonly />
                 </td>
                 <td>
-                    <input readonly />
+                    <input id="countPrice" :value="item.price * item.count" readonly>
                 </td>
                 <td>
                     <div class="plus-minus">
@@ -46,6 +46,7 @@
             </tr>
         </table>
 
+        
         <button v-on:click="Order" class="Order">Заказать</button>
 
         <div class="orders" id="history">
@@ -121,7 +122,6 @@
                 const response1 = await GetAllOrders();
                 let data1 = await response1.json();
                 this.history = data1;
-                console.log(data1);
 
                 const response2 = await GetUserName();
                 this.name = await response2.text();
@@ -164,9 +164,7 @@
                 }
             }
         }
-
         Vue.createApp(Table).mount('#table');
-    </script>
-    <script>
+        
     </script>
 </div>
