@@ -34,19 +34,26 @@
                     <input v-model="item.price" readonly />
                 </td>
                 <td>
-                    <input id="countPrice" :value="item.price * item.count" readonly>
+                    <input :value="item.price * item.count" readonly>
                 </td>
                 <td>
                     <div class="plus-minus">
                         <button class="minus" v-on:click="DecCount(item)">-</button>
                         <div>{{item.count}}</div>
-                        <button class="plus" v-on:click="item.count += 1">+</button>
+                        <button class="plus" v-on:click="IncCount(item)">+</button>
                     </div>
                 </td>
             </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td>
+                    <input class="total" value="0"/>
+                </td>
+                <td></td>
+            </tr>
         </table>
 
-        
         <button v-on:click="Order" class="Order">Заказать</button>
 
         <div class="orders" id="history">
@@ -108,7 +115,7 @@
                 return {
                     name: '',
                     history: [],
-                    data: []
+                    data: [],
                 }
             },
             async mounted() {
@@ -124,12 +131,20 @@
                 this.history = data1;
 
                 const response2 = await GetUserName();
-                this.name = await response2.text();
+                this.name = await response2.text();                
             },
             methods: {
-                DecCount: function (item) {
-                    if (item.count > 0)
+                DecCount: function (item) {                    
+                    if (item.count > 0){
                         item.count--
+                        var $total = $('input.total');
+                        $total.val(parseInt($total.val()) - item.price)
+                    }
+                },
+                IncCount: function (item){
+                    item.count += 1
+                    var $total = $('input.total');
+                    $total.val(parseInt($total.val()) + item.price)
                 },
                 logout: function () {
                     fetch("account/logout", {
@@ -164,7 +179,7 @@
                 }
             }
         }
-        Vue.createApp(Table).mount('#table');
+        Vue.createApp(Table).mount('#table');        
         
     </script>
 </div>
