@@ -12,8 +12,13 @@ body {
     font-weight: 700;
     color: #ff6a00;
     font-size: 30px;
-    display: flex;
-    justify-content: center;
+    margin-top:50px;
+}
+
+#table{
+    display:flex;
+    flex-direction: column;
+    align-items:center;
 }
 
 .text-center {
@@ -65,7 +70,7 @@ td, th {
 
 .orders {
     margin-top: 20px;
-    width: 1200px;
+    width: 950px;
     display: flex;
     gap: 20px;
     flex-wrap: wrap;

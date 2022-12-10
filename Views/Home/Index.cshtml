@@ -7,8 +7,15 @@
 
 @if (Model.is_admin)
 {
-    <button onclick='window.location.replace("admin")'>Админка</button>
+    <button style="position:absolute;top:10px;left:10px;" onclick='window.location.replace("admin")'>Админка</button>
 }
+
+<button v-on:click="logout" class="button" id="button_logout">Выйти</button>
+
+<div style="position:absolute;top:10px;right:100px;">
+    Имя
+    <input v-model="name" onchange="SetUserName(this.value)" />
+</div>
 
 <div class="text-center">
 
@@ -47,12 +54,6 @@
         </table>
 
         <button v-on:click="Order" class="Order">Заказать</button>
-        <button v-on:click="logout" class="button" id="button_logout">Выйти</button>
-
-        <div style="position:absolute;top:10px;right:100px;">
-            Имя
-            <input v-model="name" onchange="SetUserName(this.value)" />
-        </div>
 
         <div class="orders" id="history">
             <div v-for="items in history" class="order-info">
