@@ -60,20 +60,27 @@
         <input type="text" id="airtimepicker" class="form-control" style="width: 256px;"/>
     </div>
 
-    <div id="history">
-        <div v-for="items in history" style="width:90px;display:inline-block;border:1px solid black">
-            Заказ {{items.orderId}} 
-            {{items.customerName}}
-            <div v-for="item in items.products">
-                 {{item.product.price}} {{item.count}} {{item.product.name}} 
+    <div class="orders" id="history">
+        <div v-for="items in history" class="order-info">
+            <div class="left-item">
+                <div>
+                    Заказ {{items.orderId}}
+                    {{items.customerName}}
+                </div>
+                <div>
+                    Статус
+                    <select v-model="items.statusId" v-on:change="ChangeOrderStatusById(items.orderId, items.statusId)">
+                        <option v-for="option in statuses" :value="option.id">
+                            {{ option.name }}
+                        </option>
+                    </select>
+                </div>
             </div>
-            Статус 
-            <select v-model="items.statusId" v-on:change="ChangeOrderStatusById(items.orderId, items.statusId)">
-                <option v-for="option in statuses" :value="option.id">
-                    {{ option.name }}
-                </option>
-            </select>
-            <br>
+            <div class="right-item">
+                <div v-for="item in items.products">
+                    {{item.product.price}}р. {{item.count}}шт. {{item.product.name}}
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -146,7 +153,7 @@
             
             const res2 = await GetAllOrders();
             let history = await res2.json();
-            this.history = history;
+            this.history = history.reverse();
 
             const res3 = await GetStatuses();
             let statuses = await res3.json();

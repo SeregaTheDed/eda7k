@@ -11,7 +11,7 @@
 }
 
 <div class="text-center">
-   
+
     <div id="Welcome">
         Что будем кушать?
     </div>
@@ -19,31 +19,31 @@
     <div id="table">
         <table class="table2">
             <tr>
-            <th width="250">Блюдо</th>
-            <th width="150">Цена</th>
-            <th width="150">Общая цена</th>
-            <th width="150">Количество</th>
+                <th width="250">Блюдо</th>
+                <th width="150">Цена</th>
+                <th width="150">Общая цена</th>
+                <th width="150">Количество</th>
             </tr>
 
             <tr v-for="item in data">
-            <td>
-                <input type="hidden" v-model="item.id" />
-                <input v-model="item.name" readonly/>
-            </td>
-            <td>
-                <input v-model="item.price" readonly/>
-            </td>
-            <td>
-                <input readonly/>
-            </td>
-            <td>
-                <div class="plus-minus">
+                <td>
+                    <input type="hidden" v-model="item.id" />
+                    <input v-model="item.name" readonly />
+                </td>
+                <td>
+                    <input v-model="item.price" readonly />
+                </td>
+                <td>
+                    <input readonly />
+                </td>
+                <td>
+                    <div class="plus-minus">
                         <button class="minus" v-on:click="DecCount(item)">-</button>
                         <div>{{item.count}}</div>
                         <button class="plus" v-on:click="item.count += 1">+</button>
-                </div>
-            </td>
-        </tr>
+                    </div>
+                </td>
+            </tr>
         </table>
 
         <button v-on:click="Order" class="Order">Заказать</button>
@@ -51,20 +51,23 @@
 
         <div style="position:absolute;top:10px;right:100px;">
             Имя
-            <input v-model="name" onchange="SetUserName(this.value)"/>
+            <input v-model="name" onchange="SetUserName(this.value)" />
         </div>
 
-        <div id="history">
-        <div v-for="items in history" style="width:90px;display:inline-block;border:1px solid black">
-            Заказ
-            <div v-for="item in items">
-                 {{item.product.price}} {{item.count}} {{item.product.name}} 
+        <div class="orders" id="history">
+            <div v-for="items in history" class="order-info">
+                <div class="left-item">
+                    Заказ
+                </div>
+                <div class="right-item">
+                    <div v-for="item in items">
+                        {{item.product.price}}р. {{item.count}}шт. {{item.product.name}}
+                    </div>
+                </div>
             </div>
-            <br>
-        </div>
         </div>
     </div>
-    
+
 
 
     <script src="~/lib/jquery/dist/jquery.js"></script>
@@ -77,53 +80,54 @@
             })
         }
         async function GetProductsForOrder() {
-            return await fetch("home/GetProductsForOrder",{
+            return await fetch("home/GetProductsForOrder", {
                 method: 'POST'
             })
         }
         async function GetUserName() {
-            return await fetch("home/GetUserName",{
+            return await fetch("home/GetUserName", {
                 method: 'POST'
             })
         }
         async function SetUserName(value) {
-            return await fetch("home/SetUserName",{
+            return await fetch("home/SetUserName", {
                 method: 'POST',
                 headers: {
-                'Content-Type': 'application/json;charset=utf-8'
+                    'Content-Type': 'application/json;charset=utf-8'
                 },
                 body: JSON.stringify(value)
             })
         }
 
         const Table = {
-        data() {            
-            return {
-                name: '',
-                history: [],
-                data: []
-            }
-        },
-        async mounted() {
-            const response = await GetProductsForOrder();
-            let data = await response.json();
-            this.data = data;
-            for(let i = 0; i < data.length; i++){
-            data[i].count = 0;   
-            }
-
-            const response1 = await GetAllOrders();
-            let data1 = await response1.json();
-            this.history = data1;
-
-            const response2 = await GetUserName();
-            this.name = await response2.text();
-        },
-        methods:{
-            DecCount: function(item){
-                if (item.count > 0)
-                    item.count--
+            data() {
+                return {
+                    name: '',
+                    history: [],
+                    data: []
+                }
             },
+            async mounted() {
+                const response = await GetProductsForOrder();
+                let data = await response.json();
+                this.data = data;
+                for (let i = 0; i < data.length; i++) {
+                    data[i].count = 0;
+                }
+
+                const response1 = await GetAllOrders();
+                let data1 = await response1.json();
+                this.history = data1;
+                console.log(data1);
+
+                const response2 = await GetUserName();
+                this.name = await response2.text();
+            },
+            methods: {
+                DecCount: function (item) {
+                    if (item.count > 0)
+                        item.count--
+                },
                 logout: function () {
                     fetch("account/logout", {
                         method: 'POST'
@@ -131,11 +135,11 @@
                         location.reload();
                     })
                 },
-             Order: async function(){
-                 if(!this.name){
-                    alert("Введите имя");
-                 }
-                 else{
+                Order: async function () {
+                    if (!this.name) {
+                        alert("Введите имя");
+                    }
+                    else {
                         let orders = new Array();
                         for (let i = 0; i < this.data.length; i++) {
                             orders.push({ ProductId: this.data[i].id, Count: this.data[i].count })
@@ -145,20 +149,20 @@
                             method: "post",
                             url: "/home/DoOrder",
                             data: JSON.stringify(orders),
-                            success: function (data) {                                
-                                alert("Успешно! Заказ принят.");  
-                                window.location.reload();   
+                            success: function (data) {
+                                alert("Успешно! Заказ принят.");
+                                window.location.reload();
                             },
-                            error: function (er) {           
+                            error: function (er) {
                             }
-                        });                       
-                    }           
+                        });
+                    }
                     return false;
+                }
             }
         }
-    }
 
-    Vue.createApp(Table).mount('#table');
+        Vue.createApp(Table).mount('#table');
     </script>
     <script>
     </script>
