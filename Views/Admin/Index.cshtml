@@ -25,70 +25,85 @@
 <button onclick="Logout()">Выйти</button>
 </div>
 
-  <div class="itcss">
+<div class="itcss">
     <div class="itcss__wrapper">
-      <div class="itcss__items">
-        <div class="itcss__item" style="background-color: antiquewhite;">          
-            <div id="Welcome">
-            Составьте меню на завтра
-            </div>
-            <div id="table">
-                <button id="AddBtn" v-on:click="AddNewLine">Добавить</button>
-                <button id="SaveBtn" v-on:click="SaveChanges">Сохранить</button>
-                <table>
-                    <tr>
-                        <th width="20"></th>
-                        <th width="250">Блюдо</th>
-                        <th width="250">Категория</th>
-                        <th width="150">Цена</th>
-                        <th width="150">Наценка</th>
-                        <th width="200">Будет ли завтра</th>
-                    </tr>
-                    <tr v-for="item in data">
-                        <td>
-                            <button id="button_X" v-on:click="deleteProd(item.id)">X</button>
-                            <input type="hidden" v-model="item.id" />
-                        </td>
-                        <td>
-                            <input v-model="item.name" />
-                        </td>
-                        <td>                
-                            <select v-model="item.category_id">     
-                                <option v-for="category in categories" v-bind:value="category.id">
-                                {{category.name}}
-                                </option>                                  
-                            </select>                             
-                        </td>
-                        <td>
-                            <input v-model="item.price" />
-                        </td>
-                        <td>
-                            <input v-model="item.extra" />
-                        </td>
-                        <td>
-                            <input type="checkbox" v-model="item.availability_tomorrow" />
-                        </td>
-                    </tr>
-                </table>     
+        <div class="itcss__items">
+            <div class="itcss__item" style="background-color: antiquewhite;">          
+                <div id="Welcome">
+                Составьте меню на завтра
+                </div>
+                <div id="table">
+                    <button id="AddBtn" v-on:click="AddNewLine">Добавить</button>
+                    <button id="SaveBtn" v-on:click="SaveChanges">Сохранить</button>
+                    <table>
+                        <tr>
+                            <th width="20"></th>
+                            <th width="250">Блюдо</th>
+                            <th width="250">Категория</th>
+                            <th width="150">Цена</th>
+                            <th width="150">Наценка</th>
+                            <th width="200">Будет ли завтра</th>
+                        </tr>
+                        <tr v-for="item in data">
+                            <td>
+                                <button id="button_X" v-on:click="deleteProd(item.id)">X</button>
+                                <input type="hidden" v-model="item.id" />
+                            </td>
+                            <td>
+                                <input v-model="item.name" />
+                            </td>
+                            <td>                
+                                <select v-model="item.category_id">     
+                                    <option v-for="category in categories" v-bind:value="category.id">
+                                    {{category.name}}
+                                    </option>                                  
+                                </select>                             
+                            </td>
+                            <td>
+                                <input v-model="item.price" />
+                            </td>
+                            <td>
+                                <input v-model="item.extra" />
+                            </td>
+                            <td>
+                                <input type="checkbox" v-model="item.availability_tomorrow" />
+                            </td>
+                        </tr>
+                    </table>     
 
-                <div>
-                    дата на которую заказывают
-                    <input type="text" id="airdatepicker" class="form-control" style="width: 256px;"/>
-                    дата и время до которого можно будет сделать заказ
-                    <input type="text" id="airtimepicker" class="form-control" style="width: 256px;"/>
+                    <div>
+                        дата на которую заказывают
+                        <input type="text" id="airdatepicker" class="form-control" style="width: 256px;"/>
+                        дата и время до которого можно будет сделать заказ
+                        <input type="text" id="airtimepicker" class="form-control" style="width: 256px;"/>
+                    </div>
+                </div>
+            </div>
+            <div class="itcss__item" style="background-color: antiquewhite;">            
+                <div id="Welcome">
+                    Составте меню допов
+                </div>
+                <div id="tableExtra">
+                    <button id="AddBtn">Добавить</button>
+                    <button id="SaveBtn">Сохранить</button>
+                    <table>
+                        <tr>
+                            <th width="20"></th>
+                            <th width="250">Блюдо</th>
+                            <th width="250">Категория</th>
+                            <th width="150">Цена</th>
+                            <th width="150">Наценка</th>
+                            </tr>
+                    </table>
                 </div>
             </div>
         </div>
-        <div class="itcss__item" style="background-color: antiquewhite;">
-            <div>
-
-            </div>
-        </div>
-      </div>
     </div>
     <button class="itcss__btn itcss__btn_prev" role="button" data-slide="prev"></button>
     <button class="itcss__btn itcss__btn_next" role="button" data-slide="next"></button>
-  </div>
+</div>
+
+
 
 <div class="orders" id="history">
     <div v-for="items in history" class="order-info">
@@ -120,6 +135,27 @@
 <script src="~/lib/jquery/dist/jquery.js"></script>
 <script src="https://unpkg.com/vue@next"></script>
 <script src="~/js/air-datepicker.js"></script>
+
+<script>
+    async function GetExtras() {
+        return await fetch("positions/GetAllPositions", {
+            method: 'POST'
+        })
+    }
+    const TableExtra = {
+        data() {
+            return{
+                extras: []
+            }
+        },
+        async mounted() {
+            const response = await GetExtras();
+            console.log(response);
+        }
+
+    }
+    Vue.createApp(TableExtra).mount('#tableExtra')
+</script>
 
 <script>
     function Logout() {
@@ -166,11 +202,6 @@
 <script>   
     async function getData() {
         return await fetch("admin/GetProducts", {
-            method: 'POST'
-        })
-    }
-    async function GetProductsForOrder() {
-        return await fetch("home/GetProductsForOrder",{
             method: 'POST'
         })
     }
@@ -254,8 +285,6 @@
                 success: function (data) {
                 },
                 error: function (er) {
-                    console.log(id);
-                    console.log(newId);
                 }
                 });
             }
@@ -295,27 +324,6 @@
                             console.log(er);
                         }
                     });
-
-                },
-                error: function (er) {
-                    console.log(er);
-                }
-            });
-        })
-    });
-
-    $(document).ready(function () {
-        $('#button_auth').click(function (e) {
-            e.preventDefault();
-            var btn = $(this);
-            $.ajax({
-                method: "POST",
-                url: "/Authentication/Authentication",
-                data: {
-                    "login": "admin"
-                },
-                success: function (data) {
-                    $("#textbox").text($("#textbox").text() + " " +data);
 
                 },
                 error: function (er) {
