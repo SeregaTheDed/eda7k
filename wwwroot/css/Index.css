@@ -7,17 +7,9 @@
     justify-content: center;
     margin-top: 50px;
 }
-
 body {
     background-color: antiquewhite;
-}
-
-#Tablica {
-    font-family: Verdana, Helvetica, Arial, sans-serif;
-    font-size: 17px;
-    margin: auto;
-    margin-top:20px;
-    border: 5px double black;
+    display: block;
 }
 td, th {
     padding: 5px; /* Поля вокруг текста */
@@ -25,12 +17,6 @@ td, th {
 }
 input[type=checkbox] {
     transform: scale(1.5);
-}
-
-#button_logout {
-    position: absolute;
-    top: 10px;
-    right: 10px;
 }
 .order-info {
     width:500px;

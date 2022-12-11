@@ -3,90 +3,117 @@
     ViewData["Title"] = "Index";
 }
 
-<link rel="stylesheet" href="~/css/Index.css">
-<link rel="stylesheet" href="~/css/air-datepicker.css">
+<head>
+    <link rel="stylesheet" href="~/css/Index.css">
+    <link rel="stylesheet" href="~/css/air-datepicker.css">
+    <link rel="stylesheet" href="~/css/simple-adaptive-slider.css">
+    <script src="~/js/simple-adaptive-slider.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {      
+            new ItcSimpleSlider('.itcss', {
+                loop: true,
+                autoplay: false,
+                swipe: true
+            });
+        });
+    </script>
+</head>
 
-<button style="position:absolute;top:10px;left:10px;" onclick='window.location.replace("home")'>Заказы</button>
-
-<div id="Welcome">
-    Составьте меню на завтра
+<body>
+<div>
+<button onclick='window.location.replace("home")'>Заказы</button>
+<button onclick="Logout()">Выйти</button>
 </div>
 
+  <div class="itcss">
+    <div class="itcss__wrapper">
+      <div class="itcss__items">
+        <div class="itcss__item" style="background-color: antiquewhite;">          
+            <div id="Welcome">
+            Составьте меню на завтра
+            </div>
+            <div id="table">
+                <button id="AddBtn" v-on:click="AddNewLine">Добавить</button>
+                <button id="SaveBtn" v-on:click="SaveChanges">Сохранить</button>
+                <table>
+                    <tr>
+                        <th width="20"></th>
+                        <th width="250">Блюдо</th>
+                        <th width="250">Категория</th>
+                        <th width="150">Цена</th>
+                        <th width="150">Наценка</th>
+                        <th width="200">Будет ли завтра</th>
+                    </tr>
+                    <tr v-for="item in data">
+                        <td>
+                            <button id="button_X" v-on:click="deleteProd(item.id)">X</button>
+                            <input type="hidden" v-model="item.id" />
+                        </td>
+                        <td>
+                            <input v-model="item.name" />
+                        </td>
+                        <td>                
+                            <select v-model="item.category_id">     
+                                <option v-for="category in categories" v-bind:value="category.id">
+                                {{category.name}}
+                                </option>                                  
+                            </select>                             
+                        </td>
+                        <td>
+                            <input v-model="item.price" />
+                        </td>
+                        <td>
+                            <input v-model="item.extra" />
+                        </td>
+                        <td>
+                            <input type="checkbox" v-model="item.availability_tomorrow" />
+                        </td>
+                    </tr>
+                </table>     
 
-<div id="table">
-    <button id="AddBtn" v-on:click="AddNewLine">Добавить</button>
-    <button id="SaveBtn" v-on:click="SaveChanges">Сохранить</button>
-    <table>
-        <tr>
-            <th width="20"></th>
-            <th width="250">Блюдо</th>
-            <th width="250">Категория</th>
-            <th width="150">Цена</th>
-            <th width="150">Наценка</th>
-            <th width="200">Будет ли завтра</th>
-        </tr>
-        <tr v-for="item in data">
-            <td>
-                <button id="button_X" v-on:click="deleteProd(item.id)">X</button>
-                <input type="hidden" v-model="item.id" />
-            </td>
-            <td>
-                <input v-model="item.name" />
-            </td>
-            <td>                
-                <select v-model="item.category_id">     
-                    <option v-for="category in categories" v-bind:value="category.id">
-                    {{category.name}}
-                    </option>                                  
-                </select>                             
-            </td>
-            <td>
-                <input v-model="item.price" />
-            </td>
-            <td>
-                <input v-model="item.extra" />
-            </td>
-            <td>
-                <input type="checkbox" v-model="item.availability_tomorrow" />
-            </td>
-        </tr>
-    </table>
-    <button v-on:click="logout" class="button" id="button_logout">Выйти</button>
-
-    <div>
-        дата на которую заказывают
-        <input type="text" id="airdatepicker" class="form-control" style="width: 256px;"/>
-        дата и время до которого можно будет сделать заказ
-        <input type="text" id="airtimepicker" class="form-control" style="width: 256px;"/>
-    </div>
-
-    <div class="orders" id="history">
-        <div v-for="items in history" class="order-info">
-            <div class="left-item">
                 <div>
-                    Заказ {{items.orderId}}
-                    {{items.customerName}}
-                </div>
-                <div>
-                    Статус
-                    <select v-model="items.statusId" v-on:change="ChangeOrderStatusById(items.orderId, items.statusId)">
-                        <option v-for="option in statuses" :value="option.id">
-                            {{ option.name }}
-                        </option>
-                    </select>
+                    дата на которую заказывают
+                    <input type="text" id="airdatepicker" class="form-control" style="width: 256px;"/>
+                    дата и время до которого можно будет сделать заказ
+                    <input type="text" id="airtimepicker" class="form-control" style="width: 256px;"/>
                 </div>
             </div>
-            <div class="right-item">
-                <div v-for="item in items.products">
-                    {{item.product.price}}р. {{item.count}}шт. {{item.product.name}}
-                </div>
+        </div>
+        <div class="itcss__item" style="background-color: antiquewhite;">
+            <div>
+
+            </div>
+        </div>
+      </div>
+    </div>
+    <button class="itcss__btn itcss__btn_prev" role="button" data-slide="prev"></button>
+    <button class="itcss__btn itcss__btn_next" role="button" data-slide="next"></button>
+  </div>
+
+<div class="orders" id="history">
+    <div v-for="items in history" class="order-info">
+        <div class="left-item">
+            <div>
+                Заказ {{items.orderId}}
+                {{items.customerName}}
+            </div>
+            <div>
+                Статус
+                <select v-model="items.statusId" v-on:change="ChangeOrderStatusById(items.orderId, items.statusId)">
+                    <option v-for="option in statuses" :value="option.id">
+                    {{ option.name }}
+                    </option>
+                </select>
+            </div>
+        </div>
+        <div class="right-item">
+            <div v-for="item in items.products">
+                {{item.product.price}}р. {{item.count}}шт. {{item.product.name}}
             </div>
         </div>
     </div>
 </div>
-
-
-
+</body>
 
 @section scripts
     {
@@ -95,11 +122,53 @@
 <script src="~/js/air-datepicker.js"></script>
 
 <script>
-        async function getData() {
-            return await fetch("admin/GetProducts", {
-                method: 'POST'
-            })
+    function Logout() {
+        return fetch("account/logout",{
+                        method: 'POST'
+                }).then(()=>{
+                    location.reload();
+                })
+    }
+</script>
+
+<script>
+    async function GetAllOrders() {
+        return await fetch("admin/GetAllOrders",{
+            method: 'POST'
+        })
+    }
+    async function GetStatuses() {
+        return await fetch("/admin/GetStatuses", {
+            method: 'POST'
+        })
+    }
+    
+    const History = {
+        data() {
+            return {
+                history: [],
+                statuses: []
+            }
+        },
+        async mounted() {            
+            const responseHistory = await GetAllOrders();
+            let history = await responseHistory.json();
+            this.history = history.reverse();
+
+            const responseStatuses = await GetStatuses();
+            let statuses = await responseStatuses.json();
+            this.statuses = statuses;
         }
+    }
+    Vue.createApp(History).mount('#history');
+</script>
+
+<script>   
+    async function getData() {
+        return await fetch("admin/GetProducts", {
+            method: 'POST'
+        })
+    }
     async function GetProductsForOrder() {
         return await fetch("home/GetProductsForOrder",{
             method: 'POST'
@@ -121,52 +190,23 @@
         }
         });
     }
-    async function GetAllOrders() {
-        return await fetch("admin/GetAllOrders",{
-            method: 'POST'
-        })
-    }
-
-    async function GetStatuses() {
-        return await fetch("/admin/GetStatuses", {
-            method: 'POST'
-        })
-    }
-
     const Table = {
         data() {            
             return {
-                history: [],
                 categories: [],
-                data: [],
-                statuses:[],
+                data: []
             }
         },
         async mounted() {
-            const response = await getData();
-            let data = await response.json();
+            const responseData = await getData();
+            let data = await responseData.json();
             this.data = data;
             
-            const res1 = await GetCategories();
-            let cat = await res1.json();
-            this.categories = cat;
-            
-            const res2 = await GetAllOrders();
-            let history = await res2.json();
-            this.history = history.reverse();
-
-            const res3 = await GetStatuses();
-            let statuses = await res3.json();
-            this.statuses = statuses;
+            const responseCategories = await GetCategories();
+            let categories = await responseCategories.json();
+            this.categories = categories;
         },
         methods:{
-            logout: function(){
-                fetch("account/logout",{
-                        method: 'POST'
-                }).then(()=>{
-                    location.reload();
-                })
-            },
             deleteProd: async function(id){
                 if (id != undefined)
                 {
@@ -221,7 +261,6 @@
             }
         }
     }
-
     Vue.createApp(Table).mount('#table')
 </script>
 
@@ -281,7 +320,6 @@
                 },
                 error: function (er) {
                     console.log(er);
-                    console.log(123);
                 }
             });
         })
@@ -296,33 +334,30 @@
                 method: 'POST'
             })
         }
-            Date.prototype.addHours = function (h) {
-                this.setHours(this.getHours() + h);
-                return this;
-            }
-        async function SetConfig() {
-            //config = { next_order_day: '123456789', last_time_to_do_order: '123456789' }
-                $.ajax({
-                    dataType: 'json',
-                    contentType: "application/json",
-                    method: "POST",
-                    url: "admin/SetConfig",
-                    data: JSON.stringify(config),
-                    success: function (data) {
-                        console.log(data);
-                    },
-                    error: function (er) {
-                        console.log(er);
-                    }
-                });
+        Date.prototype.addHours = function (h) {
+            this.setHours(this.getHours() + h);
+            return this;
         }
-
+        async function SetConfig() {
+            $.ajax({
+                dataType: 'json',
+                contentType: "application/json",
+                method: "POST",
+                url: "admin/SetConfig",
+                data: JSON.stringify(config),
+                success: function (data) {
+                    console.log(data);
+                },
+                error: function (er) {
+                    console.log(er);
+                }
+            });
+        }
         async function GetData() {
             const res2 = await GetConfig();
             let cat2 = await res2.json();
             return cat2;
         }
-
         config = await GetData();
 
     let caled1 = new AirDatepicker('#airdatepicker', {
@@ -335,17 +370,17 @@
                 }
 
     });
-            let caled2 = new AirDatepicker('#airtimepicker', {
+    let caled2 = new AirDatepicker('#airtimepicker', {
         position: 'top left',
         timepicker: 'true',
-                selectedDates: [config.last_time_to_do_order],
+            selectedDates: [config.last_time_to_do_order],
                 onSelect({ date, formattedDate, datepicker }) 
                 {
                     config.last_time_to_do_order = date.addHours(3)
                     SetConfig()
                 }
-            });
-        })();
+    });
+    })();
 </script>
 }
 
