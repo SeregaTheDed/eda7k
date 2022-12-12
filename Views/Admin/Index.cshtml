@@ -90,10 +90,20 @@
                         <tr>
                             <th width="20"></th>
                             <th width="250">Блюдо</th>
-                            <th width="250">Категория</th>
                             <th width="150">Цена</th>
-                            <th width="150">Наценка</th>
-                            </tr>
+                        </tr>
+                        <tr v-for="extra in extras">
+                            <td>
+                                <button id="button_X" v-on:click="">X</button>
+                                <input type="hidden" v-model="extra.id" />
+                            </td>
+                            <td>
+                                <input v-model="extra.name"/>
+                            </td>
+                            <td>
+                                <input v-model="extra.price"/>
+                            </td>
+                        </tr>
                     </table>
                 </div>
             </div>
@@ -149,8 +159,10 @@
             }
         },
         async mounted() {
-            const response = await GetExtras();
-            console.log(response);
+            const responseExtras = await GetExtras();
+            let extras = await responseExtras.json();
+            this.extras = extras;
+            console.log(extras);
         }
 
     }

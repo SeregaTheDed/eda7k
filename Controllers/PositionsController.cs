@@ -128,7 +128,7 @@ namespace eda7k.Controllers
                 var PositionViews = Positions
                     .Select(x =>  GetPositionViewFromPosition(x, ProductsById));
 
-                return new OkObjectResult(Positions);
+                return new OkObjectResult(PositionViews);
             }
         }
 
