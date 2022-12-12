@@ -1,98 +1,185 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-
 @model eda7k.Models.User
-<link rel="stylesheet" href="~/css/Table2.css">
 
-@if (Model.is_admin)
-{
-    <button style="position:absolute;top:10px;left:10px;" onclick='window.location.replace("admin")'>Админка</button>
-}
+<head>
+    <link rel="stylesheet" href="~/css/Table2.css">
+    <link rel="stylesheet" href="~/css/simple-adaptive-slider.css">
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {      
+            new ItcSimpleSlider('#sliderAdmin', {
+                loop: true,
+                autoplay: false,
+                swipe: false
+            });
+        });
+    </script>
+</head>
 
-<div class="text-center">
-
-    <div id="Welcome">
-        Что будем кушать?
+<body>
+<div id="userPanel" style="display: inline">
+    @if (Model.is_admin)
+    {
+        <button onclick='window.location.replace("admin")'>Админка</button> 
+    }   
+    <div style="display: inline; margin-left:65%;">
+        Имя
+        <input v-model="name" onchange="SetUserName(this.value)" />
     </div>
+    <button onclick="Logout()">Выйти</button>
+</div>
 
-    <div id="table">
-        <table class="table2">
-            <tr>
-                <th width="250">Блюдо</th>
-                <th width="150">Цена</th>
-                <th width="150">Общая цена</th>
-                <th width="150">Количество</th>
-            </tr>
-
-            <tr v-for="item in data">
-                <td>
-                    <input type="hidden" v-model="item.id" />
-                    <input v-model="item.name" readonly />
-                </td>
-                <td>
-                    <input v-model="item.price" readonly />
-                </td>
-                <td>
-                    <input :value="item.price * item.count" readonly>
-                </td>
-                <td>
-                    <div class="plus-minus">
-                        <button class="minus" v-on:click="DecCount(item)">-</button>
-                        <div>{{item.count}}</div>
-                        <button class="plus" v-on:click="IncCount(item)">+</button>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td>
-                    <input class="total" value="0"/>
-                </td>
-                <td></td>
-            </tr>
-        </table>
-
-        <button v-on:click="Order" class="Order">Заказать</button>
-
-        <div class="orders" id="history">
-            <div v-for="items in history" class="order-info">
-                <div class="left-item">
-                    <div>Заказ</div>
-                    {{items.date.split("T")[0]}}
+<div class="itcss" id="sliderAdmin">
+    <div class="itcss__wrapper">
+        <div class="itcss__items">
+            <div class="itcss__item" style="background-color: antiquewhite;">          
+                <div id="Welcome" style="display: flex; justify-content: center;">
+                    Что будем кушать?
                 </div>
-                <div class="right-item">
-                    <div v-for="item in items.products">
-                        {{item.product.price}}р. {{item.count}}шт. {{item.product.name}}
-                    </div>
+                <div id="table">
+                    <table class="table2">
+                        <tr>
+                            <th width="250">Блюдо</th>
+                            <th width="150">Цена</th>
+                            <th width="150">Общая цена</th>
+                            <th width="150">Количество</th>
+                        </tr>
+
+                        <tr v-for="item in data">
+                            <td>
+                                <input type="hidden" v-model="item.id" />
+                                <input v-model="item.name" readonly />
+                            </td>
+                            <td>
+                                <input v-model="item.price" readonly />
+                            </td>
+                            <td>
+                                <input :value="item.price * item.count" readonly>
+                            </td>
+                            <td>
+                                <div class="plus-minus">
+                                    <button class="minus" v-on:click="DecCount(item)">-</button>
+                                    <div>
+                                        {{item.count}}
+                                    </div>
+                                    <button class="plus" v-on:click="IncCount(item)">+</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <input class="total" value="0"/>
+                            </td>
+                            <td></td>
+                        </tr>
+                    </table>
+                    <button v-on:click="Order" class="Order">Заказать</button>
+                </div>                
+            </div>
+            <div class="itcss__item" style="background-color: antiquewhite;">            
+                <div id="Welcome" style="display: flex; justify-content: center;">
+                    Допы?
+                </div>
+                <div id="tableExtra" style="display: flex; flex-direction: column; align-items: center;">
+                    <table>
+                        <tr>
+                            <th width="20"></th>
+                            <th width="250">Блюдо</th>
+                            <th width="150">Цена</th>
+                            <th width="150">Покупка</th>
+                        </tr>
+                        <tr v-for="extra in extras">
+                            <td>
+                                <input type="hidden" v-model="extra.id" />
+                            </td>
+                            <td>
+                                <input v-model="extra.name" readonly/>
+                            </td>
+                            <td>
+                                <input v-model="extra.price" readonly/>
+                            </td>
+                            <td>
+                                <button v-on:click="Buy(extra.id)">Купить</button>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
             </div>
         </div>
-
-        <button v-on:click="logout" class="button" id="button_logout">Выйти</button>
-
-        <div style="position:absolute;top:10px;right:100px;">
-            Имя
-            <input v-model="name" onchange="SetUserName(this.value)" />
-        </div>
-
     </div>
+    <button class="itcss__btn itcss__btn_prev" role="button" data-slide="prev"></button>
+    <button class="itcss__btn itcss__btn_next" role="button" data-slide="next"></button>
+</div>  
 
-
-
+<div class="orders" id="history">
+    <div v-for="items in history" class="order-info">
+        <div class="left-item">
+            <div>
+                Заказ
+            </div>
+            {{items.date.split("T")[0]}}
+        </div>
+        <div class="right-item">
+            <div v-for="item in items.products">
+                {{item.product.price}}р. {{item.count}}шт. {{item.product.name}}
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+@section scripts{
     <script src="~/lib/jquery/dist/jquery.js"></script>
     <script src="https://unpkg.com/vue@next"></script>
-    <script src="~/js/air-datepicker.js"></script>
+    <script src="~/js/simple-adaptive-slider.js"></script>
+
     <script>
-        async function GetAllOrders() {
-            return await fetch("home/GetAllOrders", {
+        async function GetExtras() {
+            return await fetch("positions/GetAllPositions", {
                 method: 'POST'
             })
         }
-        async function GetProductsForOrder() {
-            return await fetch("home/GetProductsForOrder", {
+        async function BuyPositionById(Id) {
+            return await fetch("positions/BuyPositionById", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify(Id)
+            })
+        }
+
+        const TableExtra = {
+            data() {
+                return{
+                    extras: []
+                }
+            },
+            async mounted() {
+                const responseExtras = await GetExtras();
+                let extras = await responseExtras.json();
+                this.extras = extras;
+            },
+            methods: {
+                Buy: function(Id) {
+                        console.log(extras);
+                        BuyPositionById(Id);
+                        //extras = extras.filter((item) => {return item.id != Id});
+                        console.log(extras);                    
+                }
+            }
+        }
+        Vue.createApp(TableExtra).mount('#tableExtra')
+    </script>
+
+    <script>
+        function Logout() {
+            return fetch("account/logout",{
                 method: 'POST'
+            }).then(()=>{
+                location.reload();
             })
         }
         async function GetUserName() {
@@ -101,21 +188,68 @@
             })
         }
         async function SetUserName(value) {
-            return await fetch("home/SetUserName", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json;charset=utf-8'
-                },
-                body: JSON.stringify(value)
+            if(value.length < 3) {
+                alert("Попробуйте другое имя")                
+            }
+            else{
+                return await fetch("home/SetUserName", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf-8'
+                    },
+                    body: JSON.stringify(value)
+                })
+            }
+        }
+
+        const UserPanel = {
+            data() {
+                return {
+                    name: ''
+                }
+            },
+            async mounted() {
+                const responseName = await GetUserName();
+                let name = await responseName.text(); 
+                this.name = name;
+            }
+        }
+        Vue.createApp(UserPanel).mount('#userPanel');
+    </script>
+
+    <script>
+        async function GetAllOrders() {
+            return await fetch("home/GetAllOrders", {
+                method: 'POST'
+            })
+        }
+        
+        const History = {
+            data() {
+                return {
+                    history: []
+                }
+            },
+            async mounted() {
+                const responseHistory = await GetAllOrders();
+                let history = await responseHistory.json();
+                this.history = history;      
+            }   
+        }
+        Vue.createApp(History).mount('#history');
+    </script>        
+
+    <script>        
+        async function GetProductsForOrder() {
+            return await fetch("home/GetProductsForOrder", {
+                method: 'POST'
             })
         }
 
         const Table = {
             data() {
                 return {
-                    name: '',
-                    history: [],
-                    data: [],
+                    data: []
                 }
             },
             async mounted() {
@@ -124,14 +258,7 @@
                 this.data = data;
                 for (let i = 0; i < data.length; i++) {
                     data[i].count = 0;
-                }
-
-                const response1 = await GetAllOrders();
-                let data1 = await response1.json();
-                this.history = data1;
-
-                const response2 = await GetUserName();
-                this.name = await response2.text();                
+                }        
             },
             methods: {
                 DecCount: function (item) {                    
@@ -145,19 +272,8 @@
                     item.count += 1
                     var $total = $('input.total');
                     $total.val(parseInt($total.val()) + item.price)
-                },
-                logout: function () {
-                    fetch("account/logout", {
-                        method: 'POST'
-                    }).then(() => {
-                        location.reload();
-                    })
-                },
-                Order: async function () {
-                    if (!this.name) {
-                        alert("Введите имя");
-                    }
-                    else {
+                },                
+                Order: async function () {                                
                         let orders = new Array();
                         for (let i = 0; i < this.data.length; i++) {
                             orders.push({ ProductId: this.data[i].id, Count: this.data[i].count })
@@ -174,12 +290,10 @@
                             error: function (er) {
                             }
                         });
-                    }
-                    return false;
+                    
                 }
             }
         }
         Vue.createApp(Table).mount('#table');        
-        
     </script>
-</div>
+}

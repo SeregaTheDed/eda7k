@@ -7,25 +7,24 @@
     <link rel="stylesheet" href="~/css/Index.css">
     <link rel="stylesheet" href="~/css/air-datepicker.css">
     <link rel="stylesheet" href="~/css/simple-adaptive-slider.css">
-    <script src="~/js/simple-adaptive-slider.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {      
-            new ItcSimpleSlider('.itcss', {
+            new ItcSimpleSlider('#sliderUser', {
                 loop: true,
                 autoplay: false,
-                swipe: true
+                swipe: false
             });
         });
     </script>
 </head>
 
 <body>
-<div>
-<button onclick='window.location.replace("home")'>Заказы</button>
-<button onclick="Logout()">Выйти</button>
+<div style="display: inline">
+    <button onclick='window.location.replace("home")'>Заказы</button>
+    <button onclick="Logout()" style="margin-left: 88%">Выйти</button>
 </div>
 
-<div class="itcss">
+<div class="itcss" id="sliderUser">
     <div class="itcss__wrapper">
         <div class="itcss__items">
             <div class="itcss__item" style="background-color: antiquewhite;">          
@@ -80,7 +79,7 @@
                 </div>
             </div>
             <div class="itcss__item" style="background-color: antiquewhite;">            
-                <div id="Welcome">
+                <div id="Welcome" class="d-flex">
                     Составте меню допов
                 </div>
                 <div id="tableExtra">
@@ -113,8 +112,6 @@
     <button class="itcss__btn itcss__btn_next" role="button" data-slide="next"></button>
 </div>
 
-
-
 <div class="orders" id="history">
     <div v-for="items in history" class="order-info">
         <div class="left-item">
@@ -145,6 +142,7 @@
 <script src="~/lib/jquery/dist/jquery.js"></script>
 <script src="https://unpkg.com/vue@next"></script>
 <script src="~/js/air-datepicker.js"></script>
+<script src="~/js/simple-adaptive-slider.js"></script>
 
 <script>
     async function GetExtras() {

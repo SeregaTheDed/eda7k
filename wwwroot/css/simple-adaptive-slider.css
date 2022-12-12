@@ -95,29 +95,31 @@
 
 /* Индикаторы */
 .itcss__indicators {
-  position: absolute;
-  right: 0;
-  bottom: 10px;
-  left: 0;
-  display: flex;
-  justify-content: center;
-  margin: 0 15%;
-  padding-left: 0;
-  list-style: none;
-  user-select: none;
+    position: absolute;
+    right: 0;
+    bottom: 10px;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    margin: 0 15%;
+    padding-left: 0;
+    list-style: none;
+    user-select: none;
+    visibility: hidden;
 }
 
 .itcss__indicator {
-  flex: 0 1 auto;
-  width: 30px;
-  height: 2px;
-  margin-right: 3px;
-  margin-left: 3px;
-  background-color: rgb(255 255 255 / 50%);
-  background-clip: padding-box;
-  border-top: 10px solid transparent;
-  border-bottom: 10px solid transparent;
-  cursor: pointer;
+    flex: 0 1 auto;
+    width: 30px;
+    height: 2px;
+    margin-right: 3px;
+    margin-left: 3px;
+    background-color: rgb(255 255 255 / 50%);
+    background-clip: padding-box;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    cursor: pointer;
+    visibility: hidden;
 }
 
 .itcss__indicator_active {
