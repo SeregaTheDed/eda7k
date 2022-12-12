@@ -118,6 +118,41 @@ namespace eda7k.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> GetAllPositionsForAdmin()
+        {
+            using (var db = new DBConnection())
+            {
+                var Positions = await db.Positions.ToArrayAsync();
+                var ProductsById = (await db.Products.ToArrayAsync()).ToDictionary(x => x.id.Value);
+
+                var PositionViews = Positions
+                    .Select(x =>
+                    {
+                        return GetPositionViewAdminFromPosition(x, ProductsById);
+                    });
+
+                return new OkObjectResult(PositionViews);
+            }
+        }
+
+        private static PositionViewAdmin GetPositionViewAdminFromPosition(Position x, Dictionary<int, Product> ProductsById)
+        {
+            var FirstProduct = ProductsById.GetValueOrDefault(x.product_id_first, Product.GetEmptyProduct());
+            Product SecondProduct = null;
+            if (x.product_id_second.HasValue == true)
+            {
+                SecondProduct = ProductsById.GetValueOrDefault(x.product_id_second.Value, Product.GetEmptyProduct());
+            }
+            return new PositionViewAdmin()
+            {
+                Id = x.id.Value,
+                WithSause = x.with_sauce,
+                FirstProduct = FirstProduct,
+                SecondProduct = SecondProduct
+            };
+        }
+
+        [HttpPost]
         public async Task<IActionResult> GetAllPositions()
         {
             using (var db = new DBConnection())
@@ -178,6 +213,13 @@ namespace eda7k.Controllers
         public int Id { get; set; }
         public string Name { get; set; }
         public int Price { get; set; }
+    }
+    public class PositionViewAdmin
+    {
+        public int Id { get; set; }
+        public Product FirstProduct { get; set; }
+        public Product? SecondProduct { get; set; }
+        public bool WithSause { get; set; }
 
     }
 }
