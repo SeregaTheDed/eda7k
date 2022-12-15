@@ -29,7 +29,7 @@ namespace eda7k.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AskActionLongPool([FromBody] int id)
+        public async Task<IActionResult> AskActionLongPool()
         {
             var result = await MyChannel.GetSheduleTask();//Ожидание пока кто-то что-то не купит
             return Ok(result);
@@ -113,7 +113,7 @@ namespace eda7k.Controllers
                 var PositionViews = Positions
                     .Select(x => GetPositionViewFromPosition(x, ProductsById));
 
-                return new OkObjectResult(Positions);
+                return new OkObjectResult(PositionViews);
             }
         }
 
