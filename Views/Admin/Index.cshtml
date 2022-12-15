@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="~/css/air-datepicker.css">
     <link rel="stylesheet" href="~/css/simple-adaptive-slider.css">
     <script>
-        document.addEventListener('DOMContentLoaded', () => {      
+        document.addEventListener('DOMContentLoaded', () => {
             new ItcSimpleSlider('#sliderUser', {
                 loop: true,
                 autoplay: false,
@@ -19,386 +19,443 @@
 </head>
 
 <body>
-<div style="display: inline">
-    <button onclick='window.location.replace("home")'>Заказы</button>
-    <button onclick="Logout()" style="margin-left: 88%">Выйти</button>
-</div>
+    <div style="display: inline">
+        <button onclick='window.location.replace("home")'>Заказы</button>
+        <button onclick="Logout()" style="margin-left: 88%">Выйти</button>
+    </div>
 
-<div class="itcss" id="sliderUser">
-    <div class="itcss__wrapper">
-        <div class="itcss__items">
-            <div class="itcss__item" style="background-color: antiquewhite;">          
-                <div id="Welcome">
-                Составьте меню на завтра
+    <div class="itcss" id="sliderUser">
+        <div class="itcss__wrapper">
+            <div class="itcss__items">
+                <div class="itcss__item" style="background-color: antiquewhite;">
+                    <div id="Welcome">
+                        Составьте меню на завтра
+                    </div>
+                    <div id="table">
+                        <button id="AddBtn" v-on:click="AddNewLine">Добавить</button>
+                        <button id="SaveBtn" v-on:click="SaveChanges">Сохранить</button>
+                        <table>
+                            <tr>
+                                <th width="20"></th>
+                                <th width="250">Блюдо</th>
+                                <th width="250">Категория</th>
+                                <th width="150">Цена</th>
+                                <th width="150">Наценка</th>
+                                <th width="200">Будет ли завтра</th>
+                            </tr>
+                            <tr v-for="item in data">
+                                <td>
+                                    <button id="button_X" v-on:click="deleteProd(item.id)">X</button>
+                                    <input type="hidden" v-model="item.id" />
+                                </td>
+                                <td>
+                                    <input v-model="item.name" />
+                                </td>
+                                <td>
+                                    <select v-model="item.category_id">
+                                        <option v-for="category in categories" v-bind:value="category.id">
+                                            {{category.name}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input v-model="item.price" />
+                                </td>
+                                <td>
+                                    <input v-model="item.extra" />
+                                </td>
+                                <td>
+                                    <input type="checkbox" v-model="item.availability_tomorrow" />
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div>
+                            дата на которую заказывают
+                            <input type="text" id="airdatepicker" class="form-control" style="width: 256px;" />
+                            дата и время до которого можно будет сделать заказ
+                            <input type="text" id="airtimepicker" class="form-control" style="width: 256px;" />
+                        </div>
+                    </div>
                 </div>
-                <div id="table">
-                    <button id="AddBtn" v-on:click="AddNewLine">Добавить</button>
-                    <button id="SaveBtn" v-on:click="SaveChanges">Сохранить</button>
-                    <table>
-                        <tr>
-                            <th width="20"></th>
-                            <th width="250">Блюдо</th>
-                            <th width="250">Категория</th>
-                            <th width="150">Цена</th>
-                            <th width="150">Наценка</th>
-                            <th width="200">Будет ли завтра</th>
-                        </tr>
-                        <tr v-for="item in data">
-                            <td>
-                                <button id="button_X" v-on:click="deleteProd(item.id)">X</button>
-                                <input type="hidden" v-model="item.id" />
-                            </td>
-                            <td>
-                                <input v-model="item.name" />
-                            </td>
-                            <td>                
-                                <select v-model="item.category_id">     
-                                    <option v-for="category in categories" v-bind:value="category.id">
-                                    {{category.name}}
-                                    </option>                                  
-                                </select>                             
-                            </td>
-                            <td>
-                                <input v-model="item.price" />
-                            </td>
-                            <td>
-                                <input v-model="item.extra" />
-                            </td>
-                            <td>
-                                <input type="checkbox" v-model="item.availability_tomorrow" />
-                            </td>
-                        </tr>
-                    </table>     
-
-                    <div>
-                        дата на которую заказывают
-                        <input type="text" id="airdatepicker" class="form-control" style="width: 256px;"/>
-                        дата и время до которого можно будет сделать заказ
-                        <input type="text" id="airtimepicker" class="form-control" style="width: 256px;"/>
+                <div class="itcss__item" style="background-color: antiquewhite;">
+                    <div id="Welcome" class="d-flex">
+                        Составьте меню допов
+                    </div>
+                    <div id="tableExtra">
+                        <button id="AddBtn" v-on:click="addExtra">Добавить</button>
+                        <button id="SaveBtn">Сохранить</button>
+                        <table id="dopi">
+                            <tr>
+                                <th width="20"></th>
+                                <th>Продукт</th>
+                                <th>Гарнир</th>
+                                <th width="30">Соус</th>
+                                <th>Цена</th>
+                            </tr>
+                            <tr v-for="(extra, index) in extras">
+                                <td>
+                                    <button id="button_X" v-on:click="delExtra(index)">X</button>
+                                    <input type="hidden" v-model="extra.id" />
+                                </td>
+                                <td>
+                                    <input v-model="extra.firstProduct.name" list="main-food" />
+                                    <datalist id="main-food">
+                                        <option v-for="item in mainFood">
+                                            {{item.name}}
+                                        </option>
+                                    </datalist>
+                                </td>
+                                <td>
+                                    <input v-if="extra.secondProduct" v-model="extra.secondProduct.name" list="garnir" />
+                                    <datalist id="garnir">
+                                        <option v-for="item in garnir">
+                                            {{item.name}}
+                                        </option>
+                                    </datalist>
+                                </td>
+                                <td>
+                                    <input type="checkbox" v-model="extra.withSause" />
+                                </td>
+                                <td>
+                                    <input v-model="extra.price" />
+                                </td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
             </div>
-            <div class="itcss__item" style="background-color: antiquewhite;">            
-                <div id="Welcome" class="d-flex">
-                    Составте меню допов
-                </div>
-                <div id="tableExtra">
-                    <button id="AddBtn">Добавить</button>
-                    <button id="SaveBtn">Сохранить</button>
-                    <table>
-                        <tr>
-                            <th width="20"></th>
-                            <th width="250">Блюдо</th>
-                            <th width="150">Цена</th>
-                        </tr>
-                        <tr v-for="extra in extras">
-                            <td>
-                                <button id="button_X" v-on:click="">X</button>
-                                <input type="hidden" v-model="extra.id" />
-                            </td>
-                            <td>
-                                <input v-model="extra.name"/>
-                            </td>
-                            <td>
-                                <input v-model="extra.price"/>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
         </div>
+        <button class="itcss__btn itcss__btn_prev" role="button" data-slide="prev"></button>
+        <button class="itcss__btn itcss__btn_next" role="button" data-slide="next"></button>
     </div>
-    <button class="itcss__btn itcss__btn_prev" role="button" data-slide="prev"></button>
-    <button class="itcss__btn itcss__btn_next" role="button" data-slide="next"></button>
-</div>
 
-<div class="orders" id="history">
-    <div v-for="items in history" class="order-info">
-        <div class="left-item">
-            <div>
-                Заказ {{items.orderId}}
-                {{items.customerName}}
+    <div class="orders" id="history">
+        <div v-for="items in history" class="order-info">
+            <div class="left-item">
+                <div>
+                    Заказ {{items.orderId}}
+                    {{items.customerName}}
+                </div>
+                <div>
+                    Статус
+                    <select v-model="items.statusId" v-on:change="ChangeOrderStatusById(items.orderId, items.statusId)">
+                        <option v-for="option in statuses" :value="option.id">
+                            {{ option.name }}
+                        </option>
+                    </select>
+                </div>
             </div>
-            <div>
-                Статус
-                <select v-model="items.statusId" v-on:change="ChangeOrderStatusById(items.orderId, items.statusId)">
-                    <option v-for="option in statuses" :value="option.id">
-                    {{ option.name }}
-                    </option>
-                </select>
-            </div>
-        </div>
-        <div class="right-item">
-            <div v-for="item in items.products">
-                {{item.product.price}}р. {{item.count}}шт. {{item.product.name}}
+            <div class="right-item">
+                <div v-for="item in items.products">
+                    {{item.product.price}}р. {{item.count}}шт. {{item.product.name}}
+                </div>
             </div>
         </div>
     </div>
-</div>
 </body>
 
 @section scripts
     {
-<script src="~/lib/jquery/dist/jquery.js"></script>
-<script src="https://unpkg.com/vue@next"></script>
-<script src="~/js/air-datepicker.js"></script>
-<script src="~/js/simple-adaptive-slider.js"></script>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="~/js/air-datepicker.js"></script>
+    <script src="~/js/simple-adaptive-slider.js"></script>
 
-<script>
-    async function GetExtras() {
-        return await fetch("positions/GetAllPositions", {
-            method: 'POST'
-        })
-    }
-    const TableExtra = {
-        data() {
-            return{
-                extras: []
-            }
-        },
-        async mounted() {
-            const responseExtras = await GetExtras();
-            let extras = await responseExtras.json();
-            this.extras = extras;
-            console.log(extras);
+    <script>
+        async function GetExtras() {
+            return await fetch("positions/GetAllPositionsForAdmin", {
+                method: 'POST'
+            })
         }
 
-    }
-    Vue.createApp(TableExtra).mount('#tableExtra')
-</script>
-
-<script>
-    function Logout() {
-        return fetch("account/logout",{
-                        method: 'POST'
-                }).then(()=>{
-                    location.reload();
-                })
-    }
-</script>
-
-<script>
-    async function GetAllOrders() {
-        return await fetch("admin/GetAllOrders",{
-            method: 'POST'
-        })
-    }
-    async function GetStatuses() {
-        return await fetch("/admin/GetStatuses", {
-            method: 'POST'
-        })
-    }
-    
-    const History = {
-        data() {
-            return {
-                history: [],
-                statuses: []
-            }
-        },
-        async mounted() {            
-            const responseHistory = await GetAllOrders();
-            let history = await responseHistory.json();
-            this.history = history.reverse();
-
-            const responseStatuses = await GetStatuses();
-            let statuses = await responseStatuses.json();
-            this.statuses = statuses;
+        async function GetMainFood() {
+            return await fetch("positions/GetMainFood", {
+                method: 'POST'
+            })
         }
-    }
-    Vue.createApp(History).mount('#history');
-</script>
 
-<script>   
-    async function getData() {
-        return await fetch("admin/GetProducts", {
-            method: 'POST'
-        })
-    }
-    async function GetCategories() {
-        return await fetch("admin/GetCategories",{
-            method: 'POST'
-        })
-    }
-    async function DeleteProduct(id){
-        $.ajax({
-        method: "post",
-        url: "/admin/DeleteProductById",
-        data: {"id":id},
-        success: function (data) {
-        },
-        error: function (er) {
+        async function GetGarnir() {
+            return await fetch("positions/GetGarnishes", {
+                method: 'POST'
+            })
         }
-        });
-    }
-    const Table = {
-        data() {            
-            return {
-                categories: [],
-                data: []
-            }
-        },
-        async mounted() {
-            const responseData = await getData();
-            let data = await responseData.json();
-            this.data = data;
-            
-            const responseCategories = await GetCategories();
-            let categories = await responseCategories.json();
-            this.categories = categories;
-        },
-        methods:{
-            deleteProd: async function(id){
-                if (id != undefined)
-                {
-                    const response = await DeleteProduct(id);
+        const TableExtra = {
+            data() {
+                return {
+                    extras: [],
+                    mainFood:[],
+                    garnir:[]
                 }
-                var result = this.data.findIndex(obj => {
-                    return obj.id === id
-                })
-                this.data.splice(result, 1)
             },
-            AddNewLine: function(){
-                emptyProduct = {
-                    "price": null,
-                    "category_id": null,
-                    "extra": null,
-                    "name": "",
-                    "availability_tomorrow": false
+            async mounted() {
+                const responseExtras = await GetExtras();
+                let extras = await responseExtras.json();
+                this.extras = extras;
+
+                const responseMainFood = await GetMainFood();
+                let mainFood = await responseMainFood.json();
+                this.mainFood = mainFood;
+
+                const responseGarnir = await GetGarnir();
+                let garnir = await responseGarnir.json();
+                this.garnir = garnir;
+
+                console.log(extras);
+                console.log(mainFood);
+                console.log(garnir);
+            },
+            methods: {
+                addExtra: function () {
+                    this.extras.push({
+                        firstProduct:{
+                            name:""
+                        },
+                        secondProduct:{
+                            name:""
+                        },
+                        withSause:false
+                    })
+                },
+                delExtra: function (index) {
+                    this.extras.splice(index, 1)
+                },
+            }
+
+
+        }
+        Vue.createApp(TableExtra).mount('#tableExtra')
+    </script>
+
+    <script>
+        function Logout() {
+            return fetch("account/logout", {
+                method: 'POST'
+            }).then(() => {
+                location.reload();
+            })
+        }
+    </script>
+
+    <script>
+        async function GetAllOrders() {
+            return await fetch("admin/GetAllOrders", {
+                method: 'POST'
+            })
+        }
+        async function GetStatuses() {
+            return await fetch("/admin/GetStatuses", {
+                method: 'POST'
+            })
+        }
+
+        const History = {
+            data() {
+                return {
+                    history: [],
+                    statuses: []
                 }
-                this.data.push(emptyProduct)
             },
-            SaveChanges: async function(){   
-                console.log(this.data);           
-                $.ajax({
+            async mounted() {
+                const responseHistory = await GetAllOrders();
+                let history = await responseHistory.json();
+                this.history = history.reverse();
+
+                const responseStatuses = await GetStatuses();
+                let statuses = await responseStatuses.json();
+                this.statuses = statuses;
+            }
+        }
+        Vue.createApp(History).mount('#history');
+    </script>
+
+    <script>
+        async function getData() {
+            return await fetch("admin/GetProducts", {
+                method: 'POST'
+            })
+        }
+        async function GetCategories() {
+            return await fetch("admin/GetCategories", {
+                method: 'POST'
+            })
+        }
+        async function DeleteProduct(id) {
+            $.ajax({
+                method: "post",
+                url: "/admin/DeleteProductById",
+                data: { "id": id },
+                success: function (data) {
+                },
+                error: function (er) {
+                }
+            });
+        }
+        const Table = {
+            data() {
+                return {
+                    categories: [],
+                    data: []
+                }
+            },
+            async mounted() {
+                const responseData = await getData();
+                let data = await responseData.json();
+                this.data = data;
+
+                const responseCategories = await GetCategories();
+                let categories = await responseCategories.json();
+                this.categories = categories;
+            },
+            methods: {
+                deleteProd: async function (id) {
+                    if (id != undefined) {
+                        const response = await DeleteProduct(id);
+                    }
+                    var result = this.data.findIndex(obj => {
+                        return obj.id === id
+                    })
+                    this.data.splice(result, 1)
+                },
+                AddNewLine: function () {
+                    emptyProduct = {
+                        "price": null,
+                        "category_id": null,
+                        "extra": null,
+                        "name": "",
+                        "availability_tomorrow": false
+                    }
+                    this.data.push(emptyProduct)
+                },
+                SaveChanges: async function () {
+                    console.log(this.data);
+                    $.ajax({
                         contentType: "application/json",
                         type: "POST",
                         url: "/admin/UpdateProductTheBest",
                         data: JSON.stringify(this.data),
-                        success: function (data) {  
-                            alert("Сохранено");
-                            window.location.reload(); 
-                        },
-                        error: function (er) {                    
-                        }
-                });                
-                return false;
-            },
-            ChangeOrderStatusById: async function(id, newId){
-                $.ajax({
-                method: "post",
-                url: "/admin/ChangeOrderStatusById",
-                data: {
-                    "id":id,
-                    "newStatusId":newId
-                },
-                success: function (data) {
-                },
-                error: function (er) {
-                }
-                });
-            }
-        }
-    }
-    Vue.createApp(Table).mount('#table')
-</script>
-
-<script>
-    $(document).ready(function () {
-        $('#button').click(function (e) {
-            e.preventDefault();
-            var btn = $(this);
-            $.ajax({
-                method: "POST",
-                url: "/admin/massiv",
-                dataType: "json",
-                success: function (products) {
-                    $("#textbox").textContent += products;
-                    var group = JSON.stringify(products);
-                    console.log(group);
-                    $.ajax({
-                        dataType: 'json',
-                        contentType: "application/json",
-                        type: "POST",
-                        url: "/admin/massiv2",
-                        data: group,
                         success: function (data) {
-                            console.log("output : " + JSON.stringify(data));
-                            data.forEach(
-                                element => {
-                                    $("#textbox").text($("#textbox").text() + " " + element.id);
-                                }
-                            );
+                            alert("Сохранено");
+                            window.location.reload();
                         },
                         error: function (er) {
-                            console.log(er);
                         }
                     });
-
+                    return false;
                 },
-                error: function (er) {
-                    console.log(er);
+                ChangeOrderStatusById: async function (id, newId) {
+                    $.ajax({
+                        method: "post",
+                        url: "/admin/ChangeOrderStatusById",
+                        data: {
+                            "id": id,
+                            "newStatusId": newId
+                        },
+                        success: function (data) {
+                        },
+                        error: function (er) {
+                        }
+                    });
                 }
-            });
-        })
-    });
-</script>
+            }
+        }
+        Vue.createApp(Table).mount('#table')
+    </script>
 
-<script>
-    let config;
-        (async () => {
-        async function GetConfig() {
-            return await fetch("admin/GetConfig", {
-                method: 'POST'
+    <script>
+        $(document).ready(function () {
+            $('#button').click(function (e) {
+                e.preventDefault();
+                var btn = $(this);
+                $.ajax({
+                    method: "POST",
+                    url: "/admin/massiv",
+                    dataType: "json",
+                    success: function (products) {
+                        $("#textbox").textContent += products;
+                        var group = JSON.stringify(products);
+                        console.log(group);
+                        $.ajax({
+                            dataType: 'json',
+                            contentType: "application/json",
+                            type: "POST",
+                            url: "/admin/massiv2",
+                            data: group,
+                            success: function (data) {
+                                console.log("output : " + JSON.stringify(data));
+                                data.forEach(
+                                    element => {
+                                        $("#textbox").text($("#textbox").text() + " " + element.id);
+                                    }
+                                );
+                            },
+                            error: function (er) {
+                                console.log(er);
+                            }
+                        });
+
+                    },
+                    error: function (er) {
+                        console.log(er);
+                    }
+                });
             })
-        }
-        Date.prototype.addHours = function (h) {
-            this.setHours(this.getHours() + h);
-            return this;
-        }
-        async function SetConfig() {
-            $.ajax({
-                dataType: 'json',
-                contentType: "application/json",
-                method: "POST",
-                url: "admin/SetConfig",
-                data: JSON.stringify(config),
-                success: function (data) {
-                    console.log(data);
-                },
-                error: function (er) {
-                    console.log(er);
-                }
-            });
-        }
-        async function GetData() {
-            const res2 = await GetConfig();
-            let cat2 = await res2.json();
-            return cat2;
-        }
-        config = await GetData();
+        });
+    </script>
 
-    let caled1 = new AirDatepicker('#airdatepicker', {
-        position: 'top left',
-            selectedDates: [config.next_order_day],
-                onSelect({date, formattedDate, datepicker})
-                {
+    <script>
+        let config;
+        (async () => {
+            async function GetConfig() {
+                return await fetch("admin/GetConfig", {
+                    method: 'POST'
+                })
+            }
+            Date.prototype.addHours = function (h) {
+                this.setHours(this.getHours() + h);
+                return this;
+            }
+            async function SetConfig() {
+                $.ajax({
+                    dataType: 'json',
+                    contentType: "application/json",
+                    method: "POST",
+                    url: "admin/SetConfig",
+                    data: JSON.stringify(config),
+                    success: function (data) {
+                        console.log(data);
+                    },
+                    error: function (er) {
+                        console.log(er);
+                    }
+                });
+            }
+            async function GetData() {
+                const res2 = await GetConfig();
+                let cat2 = await res2.json();
+                return cat2;
+            }
+            config = await GetData();
+
+            let caled1 = new AirDatepicker('#airdatepicker', {
+                position: 'top left',
+                selectedDates: [config.next_order_day],
+                onSelect({ date, formattedDate, datepicker }) {
                     config.next_order_day = date.addHours(3)
                     SetConfig()
                 }
 
-    });
-    let caled2 = new AirDatepicker('#airtimepicker', {
-        position: 'top left',
-        timepicker: 'true',
-            selectedDates: [config.last_time_to_do_order],
-                onSelect({ date, formattedDate, datepicker }) 
-                {
+            });
+            let caled2 = new AirDatepicker('#airtimepicker', {
+                position: 'top left',
+                timepicker: 'true',
+                selectedDates: [config.last_time_to_do_order],
+                onSelect({ date, formattedDate, datepicker }) {
                     config.last_time_to_do_order = date.addHours(3)
                     SetConfig()
                 }
-    });
-    })();
-</script>
+            });
+        })();
+    </script>
 }
 
