@@ -111,6 +111,16 @@
 </div>  
 
 <div class="orders" id="history">
+    <div v-for="item in historyExtras" class="order-info">
+        <div class="left-item">
+            <div>
+                Допы
+            </div>            
+        </div>
+        <div class="right-item">            
+            {{item.price}}р. {{item.name}}
+        </div>
+    </div>
     <div v-for="items in history" class="order-info">
         <div class="left-item">
             <div>
@@ -261,7 +271,8 @@
         
                 const responseHistoryExtras = await GetPositionsForCurrentUser();
                 let historyExtras = await responseHistoryExtras.json();
-                console.log(historyExtras);
+                this.historyExtras = historyExtras;
+                console.log(this.historyExtras);
             }   
         }
         Vue.createApp(History).mount('#history');
