@@ -101,6 +101,28 @@ namespace eda7k.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> GetGarnishes()
+        {
+            using (var db = new DBConnection())
+            {
+                var Garnishes = await db.Products.Where(x => x.category_id == 2).ToArrayAsync();
+
+                return new OkObjectResult(Garnishes);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetMainFood()
+        {
+            using (var db = new DBConnection())
+            {
+                var Garnishes = await db.Products.Where(x => x.category_id == 1).ToArrayAsync();
+
+                return new OkObjectResult(Garnishes);
+            }
+        }
+
+        [HttpPost]
         public async Task<IActionResult> GetPositionsForCurrentUser()
         {
             using (var db = new DBConnection())
