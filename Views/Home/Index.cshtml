@@ -86,17 +86,13 @@
                 <div id="tableExtra" style="display: flex; flex-direction: column; align-items: center;">
                     <table>
                         <tr>
-                            <th width="20"></th>
-                            <th width="250">Блюдо</th>
+                            <th width="350">Блюдо</th>
                             <th width="150">Цена</th>
                             <th width="150">Покупка</th>
                         </tr>
-                        <tr v-for="extra in extras">
+                        <tr v-for="extra in extras" v-bind:key="extra.id">
                             <td>
-                                <input type="hidden" v-model="extra.id" />
-                            </td>
-                            <td>
-                                <input v-model="extra.name" readonly/>
+                                <input v-model="extra.name" style="width: 100%;" readonly/>
                             </td>
                             <td>
                                 <input v-model="extra.price" readonly/>
@@ -136,6 +132,8 @@
     <script src="~/js/simple-adaptive-slider.js"></script>
 
     <script>
+        
+
         async function GetExtras() {
             return await fetch("positions/GetAllPositions", {
                 method: 'POST'
@@ -161,14 +159,34 @@
                 const responseExtras = await GetExtras();
                 let extras = await responseExtras.json();
                 this.extras = extras;
+                this.LongPool();
             },
             methods: {
                 Buy: function(Id) {
-                        console.log(extras);
                         BuyPositionById(Id);
-                        //extras = extras.filter((item) => {return item.id != Id});
-                        console.log(extras);                    
-                }
+                        //this.extras = this.extras.filter((item) => {return item.id != Id});
+                },
+                LongPool: async function() {
+                    let response = await fetch("positions/AskActionLongPool", {
+                        method: 'POST'
+                    });
+            
+                    if (response.status == 502) {
+                        await this.LongPool();
+                    }
+                    else if (response.status != 200) {
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        await this.LongPool();
+                    }
+                    else {
+                        let message = await response.json();
+                        let deletingIndex = this.extras.findIndex((item) => {return item.id == message.value;})
+                        if (deletingIndex != -1) {                    
+                            this.extras.splice(deletingIndex, 1)                
+                        }
+                        await this.LongPool();
+                    }
+                }                
             }
         }
         Vue.createApp(TableExtra).mount('#tableExtra')
@@ -223,17 +241,27 @@
                 method: 'POST'
             })
         }
-        
+        async function GetPositionsForCurrentUser() {
+            return await fetch("positions/GetPositionsForCurrentUser", {
+                method: 'POST'
+            })
+        }
+
         const History = {
             data() {
                 return {
-                    history: []
+                    history: [],
+                    historyExtras: []
                 }
             },
             async mounted() {
                 const responseHistory = await GetAllOrders();
                 let history = await responseHistory.json();
-                this.history = history;      
+                this.history = history;   
+        
+                const responseHistoryExtras = await GetPositionsForCurrentUser();
+                let historyExtras = await responseHistoryExtras.json();
+                console.log(historyExtras);
             }   
         }
         Vue.createApp(History).mount('#history');
