@@ -170,7 +170,8 @@ namespace eda7k.Controllers
                 Id = x.id.Value,
                 WithSause = x.with_sauce,
                 FirstProduct = FirstProduct,
-                SecondProduct = SecondProduct
+                SecondProduct = SecondProduct,
+                StatusId = x.status_id
             };
         }
 
@@ -242,6 +243,7 @@ namespace eda7k.Controllers
         public Product FirstProduct { get; set; }
         public Product? SecondProduct { get; set; }
         public bool WithSause { get; set; }
+        public int StatusId { get; set; }
 
     }
 }

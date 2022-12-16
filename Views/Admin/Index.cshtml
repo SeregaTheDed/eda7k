@@ -84,18 +84,18 @@
                     </div>
                     <div id="tableExtra">
                         <button id="AddBtn" v-on:click="addExtra">Добавить</button>
-                        <button id="SaveBtn">Сохранить</button>
+                        <button id="SaveBtn" v-on:click="saveExtra">Сохранить</button>
                         <table id="dopi">
                             <tr>
                                 <th width="20"></th>
                                 <th>Продукт</th>
-                                <th>Гарнир</th>
+                                <th>Второе блюдо</th>
                                 <th width="30">Соус</th>
                                 <th>Цена</th>
                             </tr>
                             <tr v-for="(extra, index) in extras">
                                 <td>
-                                    <button id="button_X" v-on:click="delExtra(index)">X</button>
+                                    <button id="button_X" v-on:click="delExtra(index, extra.id)">X</button>
                                     <input type="hidden" v-model="extra.id" />
                                 </td>
                                 <td>
@@ -115,10 +115,10 @@
                                     </datalist>
                                 </td>
                                 <td>
-                                    <input type="checkbox" v-model="extra.withSause" />
+                                    <input v-if="extra.withSause" type="checkbox" v-model="extra.withSause" />
                                 </td>
                                 <td>
-                                    <input v-model="extra.price" />
+                                    <input v-model="extra.price"/>
                                 </td>
                             </tr>
                         </table>
@@ -163,6 +163,8 @@
     <script src="~/js/simple-adaptive-slider.js"></script>
 
     <script>
+        // position/DeletePositionById в боди айди продукта который удаляем
+        // position/SavePositions
         async function GetExtras() {
             return await fetch("positions/GetAllPositionsForAdmin", {
                 method: 'POST'
@@ -180,6 +182,25 @@
                 method: 'POST'
             })
         }
+
+        async function DeleteExtra(id) {
+            return await fetch("positions/DeletePositionById", {
+                method: 'POST',
+                body:{
+                    id:id
+                }
+            })
+        }
+
+        async function SaveExtra(items) {
+            return await fetch("positions/SavePositions", {
+                method: 'POST',
+                body: {
+                    extra: items
+                }
+            })
+        }
+
         const TableExtra = {
             data() {
                 return {
@@ -217,8 +238,14 @@
                         withSause:false
                     })
                 },
-                delExtra: function (index) {
+
+                delExtra: function (index, id) {
                     this.extras.splice(index, 1)
+                    DeleteExtra(id)
+                },
+
+                saveExtra: function () {
+                    SaveExtra(this.extras)
                 },
             }
 
