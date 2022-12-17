@@ -35,6 +35,31 @@ namespace eda7k.Controllers
             return Ok(result);
         }
 
+        //positions/DeletePositionById
+        [HttpPost]
+        public async Task<IActionResult> DeletePositionById([FromBody] int id)
+        {
+            using (var db = new DBConnection())
+            {
+                var DeletingPosition = await db.Positions.FirstOrDefaultAsync(x => x.id == id);
+                if (DeletingPosition == null)
+                {
+                    return BadRequest();
+                }
+                else
+                {
+                    db.Positions.Remove(DeletingPosition);
+                    await db.SaveChangesAsync();
+                    await MyChannel.WriteAsync(new KeyValuePair<Operations, int>
+                       (
+                       Operations.Delete,
+                       id
+                       ));
+                    return Ok();
+                }
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> BuyPositionById([FromBody] int id)
         {
