@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using System.Security;
 using System.Security.Claims;
 using System.Text;
 
@@ -39,6 +40,8 @@ namespace eda7k.Controllers
         [HttpPost]
         public async Task<IActionResult> DeletePositionById([FromBody] int id)
         {
+            if (_user.is_admin == false)
+                return NotFound();
             using (var db = new DBConnection())
             {
                 var DeletingPosition = await db.Positions.FirstOrDefaultAsync(x => x.id == id);
@@ -58,6 +61,43 @@ namespace eda7k.Controllers
                     return Ok();
                 }
             }
+        }
+
+        //positions/SavePositions
+        [HttpPost]
+        public async Task<IActionResult> SavePositions([FromBody] PositionViewAdmin[] views)
+        {
+            if (_user.is_admin == false)
+                return NotFound();
+            using (DBConnection db = new())
+            {
+                var SavedPositions = await db.Positions.ToArrayAsync();
+                foreach (var item in views)
+                {
+                    var updatingPosition = SavedPositions.FirstOrDefault(x => x.id == item.Id);
+                    if (updatingPosition == null)
+                    {
+                        updatingPosition = new Position();
+                        UpdatePositionByViewAdmin(item, updatingPosition);
+                        db.Positions.Add(updatingPosition);
+                    }
+                    else
+                    {
+                        UpdatePositionByViewAdmin(item, updatingPosition);
+                    }
+                }
+                await db.SaveChangesAsync();
+            }
+            return Ok();
+        }
+
+        private static void UpdatePositionByViewAdmin(PositionViewAdmin item, Position? updatingPosition)
+        {
+            updatingPosition.date = DateTime.Today;
+            updatingPosition.status_id = item.StatusId;
+            updatingPosition.product_id_first = item.FirstProduct.id.Value;
+            updatingPosition.product_id_second = item.SecondProduct.id;
+            updatingPosition.with_sauce = item.WithSause;
         }
 
         [HttpPost]
