@@ -77,7 +77,22 @@
                         </tr>
                     </table>
                     <button v-on:click="Order" class="Order">Заказать</button>
-                </div>                
+                </div>
+                <div id="history">
+                    <div v-for="items in history" class="order-info">
+                        <div class="left-item">
+                            <div>
+                                Заказ
+                            </div>
+                            {{items.date.split("T")[0]}}
+                        </div>
+                        <div class="right-item">
+                            <div v-for="item in items.products">
+                                {{item.product.price}}р. {{item.count}}шт. {{item.product.name}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="itcss__item" style="background-color: antiquewhite;">            
                 <div id="Welcome" style="display: flex; justify-content: center;">
@@ -103,38 +118,24 @@
                         </tr>
                     </table>
                 </div>
+                <div id="historyExtras">
+                    <div v-for="item in historyExtras" class="order-info">
+                        <div class="left-item">
+                            <div>
+                                Допы
+                            </div>            
+                        </div>
+                        <div class="right-item">            
+                            {{item.price}}р. {{item.name}}
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     <button class="itcss__btn itcss__btn_prev" role="button" data-slide="prev"></button>
     <button class="itcss__btn itcss__btn_next" role="button" data-slide="next"></button>
 </div>  
-
-<div class="orders" id="history">
-    <div v-for="item in historyExtras" class="order-info">
-        <div class="left-item">
-            <div>
-                Допы
-            </div>            
-        </div>
-        <div class="right-item">            
-            {{item.price}}р. {{item.name}}
-        </div>
-    </div>
-    <div v-for="items in history" class="order-info">
-        <div class="left-item">
-            <div>
-                Заказ
-            </div>
-            {{items.date.split("T")[0]}}
-        </div>
-        <div class="right-item">
-            <div v-for="item in items.products">
-                {{item.product.price}}р. {{item.count}}шт. {{item.product.name}}
-            </div>
-        </div>
-    </div>
-</div>
 </body>
 @section scripts{
     <script src="~/lib/jquery/dist/jquery.js"></script>
@@ -142,8 +143,6 @@
     <script src="~/js/simple-adaptive-slider.js"></script>
 
     <script>
-        
-
         async function GetExtras() {
             return await fetch("positions/GetAllPositions", {
                 method: 'POST'
@@ -173,8 +172,7 @@
             },
             methods: {
                 Buy: function(Id) {
-                        BuyPositionById(Id);
-                        //this.extras = this.extras.filter((item) => {return item.id != Id});
+                        BuyPositionById(Id);                        
                 },
                 LongPool: async function() {
                     let response = await fetch("positions/AskActionLongPool", {
@@ -260,22 +258,30 @@
         const History = {
             data() {
                 return {
-                    history: [],
-                    historyExtras: []
+                    history: []
                 }
             },
             async mounted() {
                 const responseHistory = await GetAllOrders();
                 let history = await responseHistory.json();
                 this.history = history;   
-        
-                const responseHistoryExtras = await GetPositionsForCurrentUser();
-                let historyExtras = await responseHistoryExtras.json();
-                this.historyExtras = historyExtras;
-                console.log(this.historyExtras);
             }   
         }
         Vue.createApp(History).mount('#history');
+
+        const HistoryExtras ={
+            data() {
+                return {
+                    historyExtras: []
+                }
+            },
+            async mounted() {
+                const responseHistoryExtras = await GetPositionsForCurrentUser();
+                let historyExtras = await responseHistoryExtras.json();
+                this.historyExtras = historyExtras;
+            }
+        }
+        Vue.createApp(HistoryExtras).mount('#historyExtras');
     </script>        
 
     <script>        
