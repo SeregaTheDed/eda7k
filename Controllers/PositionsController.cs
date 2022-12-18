@@ -102,7 +102,14 @@ namespace eda7k.Controllers
             }
             else
             {
-                updatingPosition.product_id_second = item.SecondProduct.id;
+                if (item.SecondProduct.id == 0)
+                {
+                    updatingPosition.product_id_second = null;
+                }
+                else
+                {
+                    updatingPosition.product_id_second = item.SecondProduct.id;
+                }
             }
             updatingPosition.with_sauce = item.WithSause;
             updatingPosition.price = item.Price;
@@ -114,7 +121,7 @@ namespace eda7k.Controllers
             using (var db = new DBConnection())
             {
                 var buyingPosition = await db.Positions.FirstOrDefaultAsync(x => x.id == id);
-                if (buyingPosition == null) 
+                if (buyingPosition == null)
                 {
                     return BadRequest();
                 }
@@ -178,7 +185,7 @@ namespace eda7k.Controllers
         {
             using (var db = new DBConnection())
             {
-                var Garnishes = await db.Products.Where(x => x.category_id == 2).ToArrayAsync();
+                var Garnishes = await db.Products.ToArrayAsync();
 
                 return new OkObjectResult(Garnishes);
             }
@@ -238,6 +245,10 @@ namespace eda7k.Controllers
             {
                 SecondProduct = ProductsById.GetValueOrDefault(x.product_id_second.Value, Product.GetEmptyProduct());
             }
+            else
+            {
+                SecondProduct = new Product();
+            }
             return new PositionViewAdmin()
             {
                 Id = x.id.Value,
@@ -258,7 +269,7 @@ namespace eda7k.Controllers
                 var ProductsById = (await db.Products.ToArrayAsync()).ToDictionary(x => x.id.Value);
 
                 var PositionViews = Positions
-                    .Select(x =>  GetPositionViewFromPosition(x, ProductsById));
+                    .Select(x => GetPositionViewFromPosition(x, ProductsById));
 
                 return new OkObjectResult(PositionViews);
             }

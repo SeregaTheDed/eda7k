@@ -99,23 +99,21 @@
                                     <input type="hidden" v-model="extra.id" />
                                 </td>
                                 <td>
-                                    <input v-model="extra.firstProduct.name" list="main-food" />
-                                    <datalist id="main-food">
-                                        <option v-for="item in mainFood">
+                                    <select v-model="extra.firstProduct" v-on:change="changeExtra(extra)">
+                                        <option v-for="item in garnir" v-bind:value="item">
                                             {{item.name}}
                                         </option>
-                                    </datalist>
+                                    </select>
                                 </td>
                                 <td>
-                                    <input v-if="extra.secondProduct" v-model="extra.secondProduct.name" list="garnir" />
-                                    <datalist id="garnir">
-                                        <option v-for="item in garnir">
+                                    <select v-if="extra.secondProduct && extra.firstProduct.category_id==2" v-model="extra.secondProduct">
+                                        <option v-for="item in mainFood" v-bind:value="item">
                                             {{item.name}}
                                         </option>
-                                    </datalist>
+                                    </select>
                                 </td>
                                 <td>
-                                    <input v-if="extra.withSause" type="checkbox" v-model="extra.withSause" />
+                                    <input v-if="extra.firstProduct.category_id==2" type="checkbox" v-model="extra.withSause" />
                                 </td>
                                 <td>
                                     <input v-model="extra.price"/>
@@ -232,13 +230,27 @@
                 addExtra: function () {
                     this.extras.push({
                         firstProduct:{
-                            name:""
+                            availability_tomorrow: true,
+                            category_id: 0,
+                            extra: 0,
+                            id: 0,
+                            name: "",
+                            price: 0
                         },
                         secondProduct:{
-                            name:""
+                            availability_tomorrow: true,
+                            category_id: 0,
+                            extra: 0,
+                            id: 0,
+                            name: "",
+                            price: 0
                         },
-                        withSause:false
+                        id: 0,
+                        price: 0,
+                        statusId: 1,
+                        withSause: false
                     })
+                    console.log(this.extras)
                 },
 
                 delExtra: function (index, id) {
@@ -247,7 +259,20 @@
                 },
 
                 saveExtra: function () {
+                    console.log(this.extras)
                     SaveExtra(this.extras)
+                },
+
+                changeExtra: function (item) {
+                    if (item.firstProduct.category_id != 2){
+                        item.secondProduct.availability_tomorrow = true;
+                        item.secondProduct.category_id = 0;
+                        item.secondProduct.extra = 0;
+                        item.secondProduct.id = 0;
+                        item.secondProduct.name = "";
+                        item.secondProduct.price = 0;
+                    }
+                    console.log(item)
                 },
             }
 
