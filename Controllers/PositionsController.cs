@@ -98,6 +98,7 @@ namespace eda7k.Controllers
             updatingPosition.product_id_first = item.FirstProduct.id.Value;
             updatingPosition.product_id_second = item.SecondProduct.id;
             updatingPosition.with_sauce = item.WithSause;
+            updatingPosition.price = item.Price;
         }
 
         [HttpPost]
@@ -236,7 +237,8 @@ namespace eda7k.Controllers
                 WithSause = x.with_sauce,
                 FirstProduct = FirstProduct,
                 SecondProduct = SecondProduct,
-                StatusId = x.status_id
+                StatusId = x.status_id,
+                Price = x.price,
             };
         }
 
@@ -309,6 +311,7 @@ namespace eda7k.Controllers
         public Product? SecondProduct { get; set; }
         public bool WithSause { get; set; }
         public int StatusId { get; set; }
+        public int Price { get; set; }
 
     }
 }
