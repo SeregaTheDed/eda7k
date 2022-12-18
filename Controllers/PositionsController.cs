@@ -96,7 +96,14 @@ namespace eda7k.Controllers
             updatingPosition.date = DateTime.Today;
             updatingPosition.status_id = item.StatusId;
             updatingPosition.product_id_first = item.FirstProduct.id.Value;
-            updatingPosition.product_id_second = item.SecondProduct.id;
+            if (item.SecondProduct == null)
+            {
+                updatingPosition.product_id_second = null;
+            }
+            else
+            {
+                updatingPosition.product_id_second = item.SecondProduct.id;
+            }
             updatingPosition.with_sauce = item.WithSause;
             updatingPosition.price = item.Price;
         }
