@@ -39,7 +39,7 @@
 
 /* кнопки Prev и Next */
 .itcss__btn {
-  position: absolute;
+  position: fixed;
   top: 50%;
   display: flex;
   justify-content: center;
@@ -69,11 +69,11 @@
 }
 
 .itcss__btn_prev {
-  left: -4rem;
+  left: 4rem;
 }
 
 .itcss__btn_next {
-  right: -4rem;
+  right: 4rem;
 }
 
 .itcss__btn::before {
