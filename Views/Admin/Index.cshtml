@@ -64,8 +64,8 @@
                                 <td>
                                     <input v-model="item.extra" />
                                 </td>
-                                <td>
-                                    <input type="checkbox" v-model="item.availability_tomorrow" />
+                                <td>                                    
+                                    <input type="checkbox" v-model="item.availability_tomorrow"/>                                    
                                 </td>
                             </tr>
                         </table>
@@ -77,6 +77,29 @@
                             <input type="text" id="airtimepicker" class="form-control" style="width: 256px;" />
                         </div>
                     </div>
+                    <div class="orders" id="history">
+                        <div v-for="items in history" class="order-info">
+                            <div class="left-item">
+                                <div>
+                                    Заказ {{items.orderId}}
+                                    {{items.customerName}}
+                                </div>
+                                <div>
+                                    Статус
+                                    <select v-model="items.statusId" v-on:change="ChangeOrderStatusById(items.orderId, items.statusId)">
+                                        <option v-for="option in statuses" :value="option.id">
+                                            {{ option.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="right-item">
+                                <div v-for="item in items.products">
+                                    {{item.product.price}}р. {{item.count}}шт. {{item.product.name}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>                
                 </div>
                 <div class="itcss__item" style="background-color: antiquewhite;">
                     <div id="Welcome" class="d-flex">
@@ -121,35 +144,33 @@
                             </tr>
                         </table>
                     </div>
+                    <div class="orders" id="historyExtras">
+                        <div v-for="items in historyExtras" class="order-info">
+                            <div class="left-item">
+                                <div>
+                                    Доп
+                                    {{items.customerName}}
+                                </div>
+                                <div>
+                                    Статус
+                                    <select v-model="items.statusId" v-on:change="ChangePositionStatusById(items.id, items.statusId)">
+                                        <option v-for="option in statuses" :value="option.id">
+                                            {{option.name}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="right-item">
+                                {{items.price}} р.
+                                {{items.name}}
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         <button class="itcss__btn itcss__btn_prev" role="button" data-slide="prev"></button>
         <button class="itcss__btn itcss__btn_next" role="button" data-slide="next"></button>
-    </div>
-
-    <div class="orders" id="history">
-        <div v-for="items in history" class="order-info">
-            <div class="left-item">
-                <div>
-                    Заказ {{items.orderId}}
-                    {{items.customerName}}
-                </div>
-                <div>
-                    Статус
-                    <select v-model="items.statusId" v-on:change="ChangeOrderStatusById(items.orderId, items.statusId)">
-                        <option v-for="option in statuses" :value="option.id">
-                            {{ option.name }}
-                        </option>
-                    </select>
-                </div>
-            </div>
-            <div class="right-item">
-                <div v-for="item in items.products">
-                    {{item.product.price}}р. {{item.count}}шт. {{item.product.name}}
-                </div>
-            </div>
-        </div>
     </div>
 </body>
 
@@ -222,9 +243,7 @@
                 let garnir = await responseGarnir.json();
                 this.garnir = garnir;
 
-                console.log(extras);
-                console.log(mainFood);
-                console.log(garnir);
+                this.LongPool();
             },
             methods: {
                 addExtra: function () {
@@ -249,8 +268,7 @@
                         price: 0,
                         statusId: 1,
                         withSause: false
-                    })
-                    console.log(this.extras)
+                    })                    
                 },
 
                 delExtra: function (index, id) {
@@ -258,9 +276,9 @@
                     DeleteExtra(id)
                 },
 
-                saveExtra: function () {
-                    console.log(this.extras)
-                    SaveExtra(this.extras)
+                saveExtra: async function () {                    
+                    await SaveExtra(this.extras)    
+                    alert("Продукты сохранены")
                 },
 
                 changeExtra: function (item) {
@@ -274,6 +292,28 @@
                     }
                     console.log(item)
                 },
+
+                LongPool: async function() {
+                    let response = await fetch("positions/AskActionLongPool", {
+                        method: 'POST'
+                    });
+            
+                    if (response.status == 502) {
+                        await this.LongPool();
+                    }
+                    else if (response.status != 200) {
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        await this.LongPool();
+                    }
+                    else {
+                        let message = await response.json();
+                        let deletingIndex = this.extras.findIndex((item) => {return item.id == message.value;})
+                        if (deletingIndex != -1) {                    
+                            this.extras.splice(deletingIndex, 1)                
+                        }
+                        await this.LongPool();
+                    }
+                }
             }
 
 
@@ -302,6 +342,11 @@
                 method: 'POST'
             })
         }
+        async function GetPositionsHistory() {
+            return await fetch("/positions/GetPositionsHistory", {
+                method: 'POST'
+            })
+        }
 
         const History = {
             data() {
@@ -318,9 +363,80 @@
                 const responseStatuses = await GetStatuses();
                 let statuses = await responseStatuses.json();
                 this.statuses = statuses;
+            },
+            methods: {
+                ChangeOrderStatusById: async function (id, newId) {
+                    $.ajax({
+                        method: "post",
+                        url: "/admin/ChangeOrderStatusById",
+                        data: {
+                            "id": id,
+                            "newStatusId": newId
+                        },
+                        success: function (data) {
+                        },
+                        error: function (er) {
+                        }
+                    });
+                }
             }
         }
         Vue.createApp(History).mount('#history');
+
+        const HistoryExtras = {
+            data() {
+                return {
+                    historyExtras: [],
+                    statuses: []
+                }
+            },
+            async mounted() {
+                const responseHistoryExtras = await GetPositionsHistory();
+                let historyExtras = await responseHistoryExtras.json();
+                this.historyExtras = historyExtras.reverse();
+
+                const responseStatuses = await GetStatuses();
+                let statuses = await responseStatuses.json();
+                this.statuses = statuses;
+                this.LongPool();
+            },
+            methods: {
+                ChangePositionStatusById: async function (id, newId) {
+                    $.ajax({
+                        method: "post",
+                        url: "/positions/ChangePositionStatusById",
+                        data: {
+                            "id": id,
+                            "newStatusId": newId
+                        },
+                        success: function (data) {
+                        },
+                        error: function (er) {
+                        }
+                    });
+                },
+                LongPool: async function() {
+                    let response = await fetch("positions/AskActionLongPool", {
+                        method: 'POST'
+                    });
+            
+                    if (response.status == 502) {
+                        await this.LongPool();
+                    }
+                    else if (response.status != 200) {
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        await this.LongPool();
+                    }
+                    else {          
+                        const responseHistoryExtras = await GetPositionsHistory();
+                        let historyExtras = await responseHistoryExtras.json();
+                        this.historyExtras = historyExtras.reverse();
+                        await this.LongPool();
+                    }
+                } 
+            }
+        }
+        Vue.createApp(HistoryExtras).mount('#historyExtras');
     </script>
 
     <script>
@@ -396,20 +512,6 @@
                         }
                     });
                     return false;
-                },
-                ChangeOrderStatusById: async function (id, newId) {
-                    $.ajax({
-                        method: "post",
-                        url: "/admin/ChangeOrderStatusById",
-                        data: {
-                            "id": id,
-                            "newStatusId": newId
-                        },
-                        success: function (data) {
-                        },
-                        error: function (er) {
-                        }
-                    });
                 }
             }
         }

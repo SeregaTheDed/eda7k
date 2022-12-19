@@ -7,13 +7,7 @@
     <link rel="stylesheet" href="~/css/Table2.css">
     <link rel="stylesheet" href="~/css/simple-adaptive-slider.css">
     <script>
-        document.addEventListener('DOMContentLoaded', () => {      
-            new ItcSimpleSlider('#sliderAdmin', {
-                loop: true,
-                autoplay: false,
-                swipe: false
-            });
-        });
+        
     </script>
 </head>
 
@@ -143,6 +137,14 @@
     <script src="~/js/simple-adaptive-slider.js"></script>
 
     <script>
+             
+            const slider = new ItcSimpleSlider('#sliderAdmin', {
+                loop: true,
+                autoplay: false,
+                swipe: false
+            });
+       
+
         async function GetExtras() {
             return await fetch("positions/GetAllPositions", {
                 method: 'POST'
@@ -279,6 +281,28 @@
                 const responseHistoryExtras = await GetPositionsForCurrentUser();
                 let historyExtras = await responseHistoryExtras.json();
                 this.historyExtras = historyExtras;
+                this.LongPool();
+            },
+            methods: {
+                LongPool: async function() {
+                    let response = await fetch("positions/AskActionLongPool", {
+                        method: 'POST'
+                    });
+            
+                    if (response.status == 502) {
+                        await this.LongPool();
+                    }
+                    else if (response.status != 200) {
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        await this.LongPool();
+                    }
+                    else {          
+                        const responseHistoryExtras = await GetPositionsForCurrentUser();
+                        let historyExtras = await responseHistoryExtras.json();
+                        this.historyExtras = historyExtras.reverse();
+                        await this.LongPool();
+                    }
+                } 
             }
         }
         Vue.createApp(HistoryExtras).mount('#historyExtras');
