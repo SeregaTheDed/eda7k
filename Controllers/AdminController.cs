@@ -38,7 +38,7 @@ namespace eda7k.Controllers
             using (DBConnection db = new())
             {
                 var deletingProduct = await db.Products.FirstOrDefaultAsync(x => x.id == id);
-                db.Products.Remove(deletingProduct);
+                deletingProduct.trash = true;
                 await db.SaveChangesAsync();
             }
             return Ok();
@@ -122,7 +122,7 @@ namespace eda7k.Controllers
                 return NotFound();
             using (DBConnection db = new())
             {
-                return new OkObjectResult(await db.Products.ToArrayAsync());
+                return new OkObjectResult(await db.Products.Where(x => x.trash == false).ToArrayAsync());
             }
         }
 

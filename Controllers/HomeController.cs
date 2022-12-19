@@ -50,7 +50,7 @@ namespace eda7k.Controllers
                 if (DateTime.Now > (await db.Config.FirstAsync()).last_time_to_do_order)
                     return new OkObjectResult(new Product[0]);
 
-                return new OkObjectResult(db.Products.Where(x => x.availability_tomorrow).ToArray());
+                return new OkObjectResult(db.Products.Where(x => x.trash == false).Where(x => x.availability_tomorrow).ToArray());
             }
         }
 
