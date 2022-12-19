@@ -10,6 +10,7 @@ namespace eda7k.Models
         public int extra { get; set; }
         public string name { get; set; }
         public bool availability_tomorrow { get; set; }
+        public bool trash { get; set; }
 
         public static Product GetEmptyProduct()
         {

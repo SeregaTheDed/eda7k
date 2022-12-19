@@ -185,7 +185,7 @@ namespace eda7k.Controllers
         {
             using (var db = new DBConnection())
             {
-                var Garnishes = await db.Products.ToArrayAsync();
+                var Garnishes = await db.Products.Where(x => x.trash == false).ToArrayAsync();
 
                 return new OkObjectResult(Garnishes);
             }
@@ -196,9 +196,9 @@ namespace eda7k.Controllers
         {
             using (var db = new DBConnection())
             {
-                var Garnishes = await db.Products.Where(x => x.category_id == 1).ToArrayAsync();
+                var MainFood = await db.Products.Where(x => x.trash == false).Where(x => x.category_id == 1).ToArrayAsync();
 
-                return new OkObjectResult(Garnishes);
+                return new OkObjectResult(MainFood);
             }
         }
 
