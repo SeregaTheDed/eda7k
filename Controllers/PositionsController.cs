@@ -224,13 +224,31 @@ namespace eda7k.Controllers
         {
             using (var db = new DBConnection())
             {
-                var Positions = await db.Positions.ToArrayAsync();
+                var Positions = await db.Positions.Where(x => x.user_id == null).ToArrayAsync();
                 var ProductsById = (await db.Products.ToArrayAsync()).ToDictionary(x => x.id.Value);
 
                 var PositionViews = Positions
                     .Select(x =>
                     {
                         return GetPositionViewAdminFromPosition(x, ProductsById);
+                    });
+
+                return new OkObjectResult(PositionViews);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetPositionsHistory()
+        {
+            using (var db = new DBConnection())
+            {
+                var Positions = await db.Positions.Where(x => x.user_id != null).ToArrayAsync();
+                var ProductsById = (await db.Products.ToArrayAsync()).ToDictionary(x => x.id.Value);
+
+                var PositionViews = Positions
+                    .Select(x =>
+                    {
+                        return GetPositionViewHistoryFromPosition(x, ProductsById);
                     });
 
                 return new OkObjectResult(PositionViews);
@@ -306,6 +324,41 @@ namespace eda7k.Controllers
                 Id = position.id.Value,
                 Name = productNameSB.ToString(),
                 Price = position.price
+            };
+        }
+        private static PositionViewHistory GetPositionViewHistoryFromPosition(Position position, Dictionary<int, Product> ProductsById)
+        {
+            StringBuilder productNameSB = new StringBuilder();
+
+            Product product1 = ProductsById[position.product_id_first];
+            productNameSB.Append(product1.name);
+
+            if (position.product_id_second.HasValue)
+            {
+                Product product2;
+                if (ProductsById.ContainsKey(position.product_id_second.Value))
+                {
+                    product2 = ProductsById[position.product_id_second.Value];
+                }
+                else
+                {
+                    product2 = Product.GetEmptyProduct();
+                }
+                productNameSB.Append(" + " + product2.name);
+            }
+
+            if (position.with_sauce)
+            {
+                productNameSB.Append(" + соус");
+            }
+
+            return new PositionViewHistory()
+            {
+                Id = position.id.Value,
+                Name = productNameSB.ToString(),
+                Price = position.price,
+                StatusId = position.status_id,
+                CustomerName = position.customer_name
 
             };
         }
@@ -330,6 +383,12 @@ namespace eda7k.Controllers
         public bool WithSause { get; set; }
         public int StatusId { get; set; }
         public int Price { get; set; }
+
+    }
+    public class PositionViewHistory : PositionView
+    {
+        public int StatusId { get; set; }
+        public string CustomerName { get; set; }
 
     }
 }
