@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="~/css/Index.css">
     <link rel="stylesheet" href="~/css/air-datepicker.css">
     <link rel="stylesheet" href="~/css/simple-adaptive-slider.css">
+    <link rel="stylesheet" href="~/Views/Shared/common.css" />
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             new ItcSimpleSlider('#sliderUser', {
@@ -64,8 +65,10 @@
                                 <td>
                                     <input v-model="item.extra" />
                                 </td>
-                                <td>                                    
-                                    <input type="checkbox" v-model="item.availability_tomorrow"/>                                    
+                                <td> 
+                                    <div class="checkbox" v-on:click="ChangeCheckbox(item)">
+                                        <input type="checkbox" v-model="item.availability_tomorrow"/>      
+                                    </div>
                                 </td>
                             </tr>
                         </table>
@@ -136,7 +139,9 @@
                                     </select>
                                 </td>
                                 <td>
-                                    <input v-if="extra.firstProduct.category_id==2" type="checkbox" v-model="extra.withSause" />
+                                    <div v-on:click="ChangeCheckbox(extra)">
+                                        <input v-if="extra.firstProduct.category_id==2" type="checkbox" v-model="extra.withSause"/>
+                                    </div>
                                 </td>
                                 <td>
                                     <input v-model="extra.price"/>
@@ -313,6 +318,9 @@
                         }
                         await this.LongPool();
                     }
+                },
+                ChangeCheckbox: function (item) {
+                    item.withSause = !item.withSause;
                 }
             }
 
@@ -328,7 +336,7 @@
             }).then(() => {
                 location.reload();
             })
-        }
+        }                    
     </script>
 
     <script>
@@ -512,6 +520,9 @@
                         }
                     });
                     return false;
+                },
+                ChangeCheckbox: function (item) {
+                    item.availability_tomorrow = !item.availability_tomorrow;
                 }
             }
         }
