@@ -69,11 +69,11 @@
 }
 
 .itcss__btn_prev {
-  left: 4rem;
+  left: 1rem;
 }
 
 .itcss__btn_next {
-  right: 4rem;
+  right: 1rem;
 }
 
 .itcss__btn::before {
@@ -95,17 +95,7 @@
 
 /* Индикаторы */
 .itcss__indicators {
-    position: absolute;
-    right: 0;
-    bottom: 10px;
-    left: 0;
-    display: flex;
-    justify-content: center;
-    margin: 0 15%;
-    padding-left: 0;
-    list-style: none;
-    user-select: none;
-    visibility: hidden;
+    display: none;
 }
 
 .itcss__indicator {
